@@ -14,6 +14,7 @@ public class Sprite extends Rect {
     protected TextureRegion[] regions;
     protected int frame;
 
+
     public Sprite(TextureRegion region) throws GameException {
         if (region == null) {
             throw new GameException("Region is null");
@@ -29,6 +30,7 @@ public class Sprite extends Rect {
     }
 
     public void update(float delta) {
+
     }
 
     public void draw(SpriteBatch batch) {

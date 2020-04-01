@@ -98,6 +98,7 @@ public class GameScreen extends BaseScreen {
         for (Star star : stars) {
             star.update(delta);
         }
+        shipHero.update(delta);
     }
 
     private void draw() {
