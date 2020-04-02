@@ -17,9 +17,8 @@ public class Ship extends Sprite {
     private Rect worldBounds;
 
     public Ship(TextureAtlas atlas) throws GameException {
-        super(atlas.findRegion("1"));
+        super(atlas.findRegion("main_ship1"));
         v = new Vector2(0, 0);
-
     }
 
     @Override

@@ -88,7 +88,7 @@ public class GameScreen extends BaseScreen {
             for (int i = 0; i < STAR_COUNT; i++) {
                 stars[i] =  new Star(atlas);
             }
-            shipHero = new Ship(atlasShipMain);
+            shipHero = new Ship(atlas);
         } catch (GameException e) {
             throw new RuntimeException(e);
         }
