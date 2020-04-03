@@ -10,6 +10,7 @@ import ru.tarnovskiym.base.BaseScreen;
 import ru.tarnovskiym.exception.GameException;
 import ru.tarnovskiym.math.Rect;
 import ru.tarnovskiym.sprites.Background;
+import ru.tarnovskiym.sprites.Ship;
 import ru.tarnovskiym.sprites.Star;
 
 public class GameScreen extends BaseScreen {
@@ -17,17 +18,21 @@ public class GameScreen extends BaseScreen {
     private static final int STAR_COUNT = 64;
 
     private Texture bg;
+    private Texture shipHeroTexture;
     private Background background;
 
     private TextureAtlas atlas;
+    private TextureAtlas atlasShipMain;
 
     private Star[] stars;
+    private Ship shipHero;
 
     @Override
     public void show() {
         super.show();
         bg = new Texture("textures/bg.png");
         atlas = new TextureAtlas(Gdx.files.internal("textures/mainAtlas.tpack"));
+        atlasShipMain = new TextureAtlas(Gdx.files.internal("shipMain/ShipMain.atlas"));
         initSprites();
     }
 
@@ -42,6 +47,7 @@ public class GameScreen extends BaseScreen {
     public void resize(Rect worldBounds) {
         super.resize(worldBounds);
         background.resize(worldBounds);
+        shipHero.resize(worldBounds);
         for (Star star : stars) {
             star.resize(worldBounds);
         }
@@ -51,6 +57,7 @@ public class GameScreen extends BaseScreen {
     public void dispose() {
         bg.dispose();
         atlas.dispose();
+        atlasShipMain.dispose();
         super.dispose();
     }
 
@@ -81,6 +88,7 @@ public class GameScreen extends BaseScreen {
             for (int i = 0; i < STAR_COUNT; i++) {
                 stars[i] =  new Star(atlas);
             }
+            shipHero = new Ship(atlas);
         } catch (GameException e) {
             throw new RuntimeException(e);
         }
@@ -90,6 +98,7 @@ public class GameScreen extends BaseScreen {
         for (Star star : stars) {
             star.update(delta);
         }
+        shipHero.update(delta);
     }
 
     private void draw() {
@@ -100,6 +109,7 @@ public class GameScreen extends BaseScreen {
         for (Star star : stars) {
             star.draw(batch);
         }
+        shipHero.draw(batch);
         batch.end();
     }
 }

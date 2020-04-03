@@ -31,13 +31,20 @@ enemy1
   orig: 440, 248
   offset: 0, 0
   index: -1
-main_ship
+main_ship1
   rotate: false
   xy: 916, 95
-  size: 390, 287
-  orig: 390, 287
+  size: 195, 287
+  orig: 195, 287
   offset: 0, 0
   index: -1
+main_ship2
+    rotate: false
+    xy: 1111, 95
+    size: 195, 287
+    orig: 195, 287
+    offset: 0, 0
+    index: -1
 message_game_over
   rotate: false
   xy: 8, 8
