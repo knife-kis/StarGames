@@ -15,6 +15,8 @@ public class Sprite extends Rect {
     protected TextureRegion[] regions;
     protected int frame;
     private boolean destroyed = false;
+//    private Sound soundBullet;
+//    private Assets assets;
 
     public Sprite() {
 

@@ -1,8 +1,9 @@
 package ru.tarnovskiym.sprites;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-
+import ru.tarnovskiym.base.Assets;
 import ru.tarnovskiym.base.Sprite;
 import ru.tarnovskiym.math.Rect;
 

@@ -1,10 +1,12 @@
 package ru.tarnovskiym.sprites;
 
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
+import ru.tarnovskiym.base.Assets;
 import ru.tarnovskiym.base.Sprite;
 import ru.tarnovskiym.exception.GameException;
 import ru.tarnovskiym.math.Rect;
@@ -20,6 +22,8 @@ public class MainShip extends Sprite {
     private BulletPool bulletPool;
     private TextureRegion bulletRegion;
     private Vector2 bulletV;
+//    private Sound soundBullet;
+//    private Assets assets;
 
     private final Vector2 v0;
     private final Vector2 v;
@@ -37,6 +41,8 @@ public class MainShip extends Sprite {
         bulletV = new Vector2(0, 0.5f);
         v0 = new Vector2(0.5f, 0);
         v = new Vector2();
+//        assets = new Assets();
+//        soundBullet = assets.getSoundBullet();
     }
 
     @Override
@@ -49,14 +55,7 @@ public class MainShip extends Sprite {
     @Override
     public void update(float delta) {
         pos.mulAdd(v, delta);
-        if (getLeft() < worldBounds.getLeft()) {
-            setLeft(worldBounds.getLeft());
-            stop();
-        }
-        if (getRight() > worldBounds.getRight()) {
-            setRight(worldBounds.getRight());
-            stop();
-        }
+        mowing(worldBounds);
     }
 
     @Override
@@ -98,50 +97,62 @@ public class MainShip extends Sprite {
     }
 
     public boolean keyDown(int keycode) {
-        switch (keycode) {
-            case Input.Keys.A:
-            case Input.Keys.LEFT:
-                pressedLeft = true;
-                moveLeft();
-                break;
-            case Input.Keys.D:
-            case Input.Keys.RIGHT:
-                pressedRight = true;
-                moveRight();
-                break;
-            case Input.Keys.UP:
-                shoot();
+        if ((keycode == Input.Keys.A) || (keycode == Input.Keys.LEFT)) {
+            pressedLeft = true;
+            moveLeft();
+        }
+        if ((keycode == Input.Keys.D) || (keycode == Input.Keys.RIGHT)) {
+            pressedRight = true;
+            moveRight();
+        }
+        if (keycode == Input.Keys.UP) {
+            shoot();
+//            soundBullet.play(0.2f);
+
         }
         return false;
     }
 
     public boolean keyUp(int keycode) {
-        switch (keycode) {
-            case Input.Keys.A:
-            case Input.Keys.LEFT:
-                pressedLeft = false;
-                if (pressedRight) {
-                    moveRight();
-                } else {
-                    stop();
-                }
-                break;
-            case Input.Keys.D:
-            case Input.Keys.RIGHT:
-                pressedRight = false;
-                if (pressedLeft) {
-                    moveLeft();
-                } else {
-                    stop();
-                }
-                break;
+        if ((keycode == Input.Keys.A) || (keycode == Input.Keys.LEFT)) {
+            pressedLeft = false;
+            if (pressedRight) {
+                moveRight();
+            } else {
+                stop();
+            }
+        }
+        if ((keycode == Input.Keys.D) || (keycode == Input.Keys.RIGHT)) {
+            pressedRight = false;
+            if (pressedLeft) {
+                moveLeft();
+            } else {
+                stop();
+            }
         }
         return false;
     }
 
     public void shoot() {
-        Bullet bullet = bulletPool.obtain();
+        Bullet bullet = null;
+        try {
+            bullet = bulletPool.obtain();
+        } catch (GameException e) {
+            e.printStackTrace();
+        }
         bullet.set(this, bulletRegion, pos, bulletV, 0.01f, worldBounds, 1);
+
+    }
+
+    private void mowing(Rect worldBounds) {
+        if (getLeft() < worldBounds.getLeft()) {
+            setLeft(worldBounds.getLeft());
+            stop();
+        }
+        if (getRight() > worldBounds.getRight()) {
+            setRight(worldBounds.getRight());
+            stop();
+        }
     }
 
     private void moveRight() {
