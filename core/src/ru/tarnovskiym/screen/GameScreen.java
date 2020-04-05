@@ -1,15 +1,18 @@
 package ru.tarnovskiym.screen;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 
+import ru.tarnovskiym.base.Assets;
 import ru.tarnovskiym.base.BaseScreen;
 import ru.tarnovskiym.exception.GameException;
 import ru.tarnovskiym.math.Rect;
 import ru.tarnovskiym.pool.BulletPool;
+import ru.tarnovskiym.pool.ShipPool;
 import ru.tarnovskiym.sprites.Background;
 import ru.tarnovskiym.sprites.CompShip;
 import ru.tarnovskiym.sprites.MainShip;
@@ -25,13 +28,11 @@ public class GameScreen extends BaseScreen {
     private Star[] stars;
     private BulletPool bulletPoolHero;
     private BulletPool bulletPoolComp;
-//    private ShipPool shipPool;
+    private ShipPool shipPool;
     private MainShip mainShip;
     private CompShip compShip;
-//    private Sound soundMusic;
-//    private Assets assets = new Assets();
-
-
+    private Sound soundMusic;
+    private Assets assets = new Assets();
 
     @Override
     public void show() {
@@ -40,9 +41,9 @@ public class GameScreen extends BaseScreen {
         atlas = new TextureAtlas(Gdx.files.internal("textures/mainAtlas.tpack"));
         bulletPoolHero = new BulletPool();
         bulletPoolComp = new BulletPool();
-//        shipPool = new ShipPool(atlas, bulletPoolComp);
+        shipPool = new ShipPool();
         initSprites();
-//        playMusic();
+        playMusic();
     }
 
     @Override
@@ -70,7 +71,8 @@ public class GameScreen extends BaseScreen {
         atlas.dispose();
         bulletPoolHero.dispose();
         bulletPoolComp.dispose();
-//        soundMusic.dispose();
+        compShip.destroy();
+        soundMusic.dispose();
         super.dispose();
     }
 
@@ -106,13 +108,14 @@ public class GameScreen extends BaseScreen {
         compShip.update(delta);
         bulletPoolHero.updateActiveSprites(delta);
         bulletPoolComp.updateActiveSprites(delta);
+        shipPool.updateActiveSprites(delta);
     }
 
-//    private void playMusic() {
-//        soundMusic = assets.getSoundMusic();
-//        long id = soundMusic.play();
-//        soundMusic.setLooping(id, true);
-//    }
+    private void playMusic() {
+        soundMusic = assets.getSoundMusic();
+        long id = soundMusic.play();
+        soundMusic.setLooping(id, true);
+    }
 
     private void initSprites() {
         try {
@@ -131,6 +134,7 @@ public class GameScreen extends BaseScreen {
     public void freeAllDestroyed() {
         bulletPoolHero.freeAllDestroyedActiveObjects();
         bulletPoolComp.freeAllDestroyedActiveObjects();
+        shipPool.freeAllDestroyedActiveObjects();
     }
 
     private void draw() {
@@ -145,6 +149,7 @@ public class GameScreen extends BaseScreen {
         compShip.draw(batch);
         bulletPoolHero.drawActiveSprites(batch);
         bulletPoolComp.drawActiveSprites(batch);
+        shipPool.drawActiveSprites(batch);
         batch.end();
     }
 }

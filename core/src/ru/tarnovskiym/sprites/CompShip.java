@@ -8,7 +8,6 @@ import com.badlogic.gdx.math.Vector2;
 import ru.tarnovskiym.base.Sprite;
 import ru.tarnovskiym.exception.GameException;
 import ru.tarnovskiym.math.Rect;
-import ru.tarnovskiym.math.Rnd;
 import ru.tarnovskiym.pool.BulletPool;
 
 public class CompShip extends Sprite {

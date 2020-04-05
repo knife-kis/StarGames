@@ -22,8 +22,8 @@ public class MainShip extends Sprite {
     private BulletPool bulletPool;
     private TextureRegion bulletRegion;
     private Vector2 bulletV;
-//    private Sound soundBullet;
-//    private Assets assets;
+    private Sound soundBullet;
+    private Assets assets;
 
     private final Vector2 v0;
     private final Vector2 v;
@@ -41,8 +41,8 @@ public class MainShip extends Sprite {
         bulletV = new Vector2(0, 0.5f);
         v0 = new Vector2(0.5f, 0);
         v = new Vector2();
-//        assets = new Assets();
-//        soundBullet = assets.getSoundBullet();
+        assets = new Assets();
+        soundBullet = assets.getSoundBullet();
     }
 
     @Override
@@ -107,7 +107,7 @@ public class MainShip extends Sprite {
         }
         if (keycode == Input.Keys.UP) {
             shoot();
-//            soundBullet.play(0.2f);
+            soundBullet.play(0.2f);
 
         }
         return false;
