@@ -105,6 +105,7 @@ public class GameScreen extends BaseScreen {
         mainShip.update(delta);
         compShip.update(delta);
         bulletPoolHero.updateActiveSprites(delta);
+        bulletPoolComp.updateActiveSprites(delta);
     }
 
 //    private void playMusic() {
