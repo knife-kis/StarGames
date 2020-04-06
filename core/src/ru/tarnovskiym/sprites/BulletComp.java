@@ -1,20 +1,19 @@
 package ru.tarnovskiym.sprites;
 
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import ru.tarnovskiym.base.Assets;
+
 import ru.tarnovskiym.base.Sprite;
 import ru.tarnovskiym.math.Rect;
 
-public class Bullet extends Sprite {
+public class BulletComp extends Sprite {
 
     private Rect worldBounds;
     private final Vector2 v = new Vector2();
     private int damage;
     private Object owner;
 
-    public Bullet() {
+    public BulletComp() {
         regions = new TextureRegion[1];
     }
 
