@@ -1,5 +1,6 @@
 package ru.tarnovskiym.sprites;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -7,29 +8,20 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
 import ru.tarnovskiym.base.Assets;
-import ru.tarnovskiym.base.Sprite;
+import ru.tarnovskiym.base.Ship;
 import ru.tarnovskiym.exception.GameException;
 import ru.tarnovskiym.math.Rect;
 import ru.tarnovskiym.pool.BulletPool;
 
-public class MainShip extends Sprite {
+public class MainShip extends Ship {
 
     private static final float SHIP_HEIGHT = 0.15f;
     private static final float BOTTOM_MARGIN = 0.05f;
     private static final int INVALID_POINTER = -1;
 
-    private Rect worldBounds;
-    private BulletPool bulletPool;
-    private TextureRegion bulletRegion;
-    private Vector2 bulletV;
-    private Sound soundBullet;
-    private Assets assets;
-
-    private final Vector2 v0;
-    private final Vector2 v;
-
     private boolean pressedLeft;
     private boolean pressedRight;
+    private Sound shootSound;
 
     private int leftPointer = INVALID_POINTER;
     private int rightPointer = INVALID_POINTER;
@@ -37,12 +29,16 @@ public class MainShip extends Sprite {
     public MainShip(TextureAtlas atlas, BulletPool bulletPool) throws GameException {
         super(atlas.findRegion("main_ship"), 1, 2, 2);
         this.bulletPool = bulletPool;
+        shootSound = Gdx.audio.newSound(Gdx.files.internal("sounds/laser.wav"));
         bulletRegion = atlas.findRegion("bulletMainShip");
         bulletV = new Vector2(0, 0.5f);
         v0 = new Vector2(0.5f, 0);
         v = new Vector2();
-        assets = new Assets();
-        soundBullet = assets.getSoundBullet();
+        reloadInterval = 0.2f;
+        reloadTimer = reloadInterval;
+        bulletHeight = 0.01f;
+        damage = 1;
+        hp = 100;
     }
 
     @Override
@@ -107,7 +103,6 @@ public class MainShip extends Sprite {
         }
         if (keycode == Input.Keys.UP) {
             shoot();
-            soundBullet.play(0.2f);
 
         }
         return false;
@@ -141,7 +136,7 @@ public class MainShip extends Sprite {
             e.printStackTrace();
         }
         bullet.set(this, bulletRegion, pos, bulletV, 0.01f, worldBounds, 1);
-
+        shootSound.play();
     }
 
     private void mowing(Rect worldBounds) {
@@ -153,6 +148,10 @@ public class MainShip extends Sprite {
             setRight(worldBounds.getRight());
             stop();
         }
+    }
+
+    public void disposeMusik(){
+        shootSound.dispose();
     }
 
     private void moveRight() {
