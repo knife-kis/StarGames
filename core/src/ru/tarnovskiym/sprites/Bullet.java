@@ -12,9 +12,15 @@ public class Bullet extends Sprite {
     private final Vector2 v = new Vector2();
     private int damage;
     private Object owner;
+    private int type;
 
     public Bullet() {
         regions = new TextureRegion[1];
+    }
+
+    public Bullet(int type) {
+        regions = new TextureRegion[1];
+        this.type = type;
     }
 
     public void set(
@@ -24,7 +30,8 @@ public class Bullet extends Sprite {
             Vector2 v0,
             float height,
             Rect worldBounds,
-            int damage
+            int damage,
+            int type
     ) {
        this.owner = owner;
        this.regions[0] = region;
@@ -33,6 +40,7 @@ public class Bullet extends Sprite {
        setHeightProportion(height);
        this.worldBounds = worldBounds;
        this.damage = damage;
+       this.type = type;
     }
 
     @Override

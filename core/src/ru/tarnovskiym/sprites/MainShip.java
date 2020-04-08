@@ -4,10 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
-import ru.tarnovskiym.base.Assets;
 import ru.tarnovskiym.base.Ship;
 import ru.tarnovskiym.exception.GameException;
 import ru.tarnovskiym.math.Rect;
@@ -135,8 +133,13 @@ public class MainShip extends Ship {
         } catch (GameException e) {
             e.printStackTrace();
         }
-        bullet.set(this, bulletRegion, pos, bulletV, 0.01f, worldBounds, 1);
+        bullet.set(this, bulletRegion, pos, bulletV, 0.01f, worldBounds, 1, 1);
         shootSound.play();
+    }
+
+    @Override
+    public void dmg() {
+
     }
 
     private void mowing(Rect worldBounds) {

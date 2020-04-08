@@ -54,7 +54,9 @@ public abstract class Ship extends Sprite {
 
     private void shoot() throws GameException {
         Bullet bullet = bulletPool.obtain();
-        bullet.set(this, bulletRegion, pos, bulletV, bulletHeight, worldBounds, damage);
+        bullet.set(this, bulletRegion, pos, bulletV, bulletHeight, worldBounds, damage, 0);
         shootSound.play();
     }
+
+    public abstract void dmg();
 }

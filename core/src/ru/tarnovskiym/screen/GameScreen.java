@@ -16,6 +16,7 @@ import ru.tarnovskiym.math.Rect;
 import ru.tarnovskiym.pool.BulletPool;
 import ru.tarnovskiym.pool.EnemyPool;
 import ru.tarnovskiym.sprites.Background;
+import ru.tarnovskiym.sprites.Bullet;
 import ru.tarnovskiym.sprites.Enemy;
 import ru.tarnovskiym.sprites.MainShip;
 import ru.tarnovskiym.sprites.Star;
@@ -29,11 +30,11 @@ public class GameScreen extends BaseScreen {
     private Background background;
     private TextureAtlas atlas;
     private Star[] stars;
+    private BulletPool bulletPoolEnemy;
     private BulletPool bulletPool;
     private EnemyPool enemyPool;
     private EnemyEmitter enemyEmitter;
     private MainShip mainShip;
-    private Sound soundMusic;
     private Music music;
     private Sound bulletSound;
 
@@ -42,8 +43,9 @@ public class GameScreen extends BaseScreen {
         super.show();
         bg = new Texture("textures/bg.png");
         atlas = new TextureAtlas(Gdx.files.internal("textures/mainAtlas.tpack"));
-        bulletPool = new BulletPool();
-        enemyPool = new EnemyPool(bulletPool, worldBounds);
+        bulletPoolEnemy = new BulletPool(1);
+        bulletPool = new BulletPool(0);
+        enemyPool = new EnemyPool(bulletPoolEnemy, worldBounds);
         bulletSound = Gdx.audio.newSound(Gdx.files.internal("sounds/bullet.wav"));
         enemyEmitter = new EnemyEmitter(atlas, enemyPool, worldBounds, bulletSound);
         music = Gdx.audio.newMusic(Gdx.files.internal("sounds/music.mp3"));
@@ -75,13 +77,13 @@ public class GameScreen extends BaseScreen {
     public void dispose() {
         bg.dispose();
         atlas.dispose();
+        bulletPoolEnemy.dispose();
         bulletPool.dispose();
         enemyPool.dispose();
         music.dispose();
         mainShip.disposeMusik();
         super.dispose();
     }
-
 
     @Override
     public boolean keyDown(int keycode) {
@@ -111,11 +113,11 @@ public class GameScreen extends BaseScreen {
             star.update(delta);
         }
         mainShip.update(delta);
+        bulletPoolEnemy.updateActiveSprites(delta);
         bulletPool.updateActiveSprites(delta);
         enemyPool.updateActiveSprites(delta);
         try {
             enemyEmitter.generate(delta);
-            enemyEmitter.slouMo(delta);
         } catch (GameException e) {
             e.printStackTrace();
         }
@@ -123,17 +125,21 @@ public class GameScreen extends BaseScreen {
 
     private void checkCollisions() {
         List<Enemy> enemyList = enemyPool.getActiveObjects();
+        List<Bullet> bulletList = bulletPool.getActiveObjects();
         for (Enemy enemy : enemyList) {
-            if (enemy.isDestroyed()) {
-                continue;
-            }
-            float minDist = enemy.getHalfWidth() + mainShip.getHalfWidth();
-            if (mainShip.pos.dst(enemy.pos) < minDist) {
-                enemy.destroy();
-            }
-
-            if (enemy.pos.y <= worldBounds.getTop() - enemy.getHeight()) {
-
+            for (Bullet bullet : bulletList) {
+                if (enemy.isDestroyed()) {
+                    continue;
+                }
+                float minDist = enemy.getHalfWidth() + mainShip.getHalfWidth();
+                if (mainShip.pos.dst(enemy.pos) < minDist) {
+                    enemy.destroy();
+                }
+                minDist = enemy.getHalfWidth();
+                if (enemy.pos.dst(bullet.pos) < minDist) {
+                    enemy.dmg();
+                    bullet.destroy();
+                }
             }
         }
     }
@@ -153,6 +159,7 @@ public class GameScreen extends BaseScreen {
 
     public void freeAllDestroyed() {
         bulletPool.freeAllDestroyedActiveObjects();
+        bulletPoolEnemy.freeAllDestroyedActiveObjects();
         enemyPool.freeAllDestroyedActiveObjects();
     }
 
@@ -165,6 +172,7 @@ public class GameScreen extends BaseScreen {
             star.draw(batch);
         }
         mainShip.draw(batch);
+        bulletPoolEnemy.drawActiveSprites(batch);
         bulletPool.drawActiveSprites(batch);
         enemyPool.drawActiveSprites(batch);
         batch.end();

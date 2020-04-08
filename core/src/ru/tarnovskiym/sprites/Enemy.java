@@ -26,6 +26,15 @@ public class Enemy extends Ship {
         }
     }
 
+    @Override
+    public void dmg() {
+        System.out.println(this.hp);
+        hp--;
+        if (hp <= 0){
+            destroy();
+        }
+    }
+
     public void set(
             TextureRegion[] regions,
             Vector2 v0,
