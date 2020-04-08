@@ -15,30 +15,30 @@ public class EnemyEmitter {
 
     private static final float ENEMY_SMALL_HEIGHT = 0.1f;
     private static final float ENEMY_SMALL_BULLET_HEIGHT = 0.01f;
-    private static final float ENEMY_SMALL_BULLET_VY = -0.3f;
+    private static final float ENEMY_SMALL_BULLET_VY = -0.5f;
     private static final int ENEMY_SMALL_DAMAGE = 1;
-    private static final float ENEMY_SMALL_RELOAD_INTERVAL = 3f;
+    private static final float ENEMY_SMALL_RELOAD_INTERVAL = 2f;
     private static final int ENEMY_SMALL_HP = 1;
 
     private static final float ENEMY_MEDIUM_HEIGHT = 0.15f;
     private static final float ENEMY_MEDIUM_BULLET_HEIGHT = 0.02f;
-    private static final float ENEMY_MEDIUM_BULLET_VY = -0.25f;
+    private static final float ENEMY_MEDIUM_BULLET_VY = -0.3f;
     private static final int ENEMY_MEDIUM_DAMAGE = 5;
-    private static final float ENEMY_MEDIUM_RELOAD_INTERVAL = 4f;
+    private static final float ENEMY_MEDIUM_RELOAD_INTERVAL = 2f;
     private static final int ENEMY_MEDIUM_HP = 5;
 
     private static final float ENEMY_BIG_HEIGHT = 0.2f;
     private static final float ENEMY_BIG_BULLET_HEIGHT = 0.04f;
-    private static final float ENEMY_BIG_BULLET_VY = -0.3f;
+    private static final float ENEMY_BIG_BULLET_VY = -0.2f;
     private static final int ENEMY_BIG_DAMAGE = 10;
-    private static final float ENEMY_BIG_RELOAD_INTERVAL = 1f;
+    private static final float ENEMY_BIG_RELOAD_INTERVAL = 3f;
     private static final int ENEMY_BIG_HP = 10;
 
     private Rect worldBounds;
     private Sound shootSound;
     private TextureRegion bulletRegion;
 
-    private float generateInterval = 2f;
+    private float generateInterval = 3f;
     private float generateTimer;
 
     private final TextureRegion[] enemySmallRegion;
@@ -64,7 +64,7 @@ public class EnemyEmitter {
         TextureRegion enemy2 = atlas.findRegion("enemy2");
         this.enemyBigRegion = Regions.split(enemy2, 1, 2, 2);
         this.enemyV0 = new Vector2(0, -0.6f);
-        this.enemySmallV = new Vector2(0, -0.5f);
+        this.enemySmallV = new Vector2(0, -0.25f);
         this.enemyMediumV = new Vector2(0, -0.1f);
         this.enemyBigV = new Vector2(0, -0.005f);
     }
@@ -76,7 +76,7 @@ public class EnemyEmitter {
             generateTimer = 0f;
             Enemy enemy = enemyPool.obtain();
             float type = (float) Math.random();
-            if (type < 0.3f) {
+            if (type < 0.6f) {
                 enemy.set(
                         enemySmallRegion,
                         enemyV0,
@@ -90,7 +90,7 @@ public class EnemyEmitter {
                         ENEMY_SMALL_HEIGHT,
                         enemySmallV
                 );
-            } else if (type < 0.6f) {
+            } else if (type < 0.85f) {
                 enemy.set(
                         enemyMediumRegion,
                         enemyV0,
