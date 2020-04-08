@@ -36,7 +36,7 @@ public class MainShip extends Ship {
         reloadTimer = reloadInterval;
         bulletHeight = 0.01f;
         damage = 1;
-        hp = 100;
+        hp = 10;
     }
 
     @Override

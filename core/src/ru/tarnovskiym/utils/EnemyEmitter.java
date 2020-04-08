@@ -38,7 +38,7 @@ public class EnemyEmitter {
     private Sound shootSound;
     private TextureRegion bulletRegion;
 
-    private float generateInterval = 3f;
+    private float generateInterval = 4f;
     private float generateTimer;
 
     private final TextureRegion[] enemySmallRegion;

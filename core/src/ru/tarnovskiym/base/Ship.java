@@ -35,28 +35,8 @@ public abstract class Ship extends Sprite {
 
     @Override
     public void update(float delta) {
-        if (pos.y >= worldBounds.getTop() - getHalfHeight())
-            pos.mulAdd(v0, delta);
-        else
-        if(pos.y <= worldBounds.getTop() - getHalfHeight()) {
-            pos.mulAdd(v, delta);
-            reloadTimer += delta;
-            if (reloadTimer >= reloadInterval) {
-                reloadTimer = 0f;
-                try {
-                    shoot();
-                } catch (GameException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
     }
 
-    private void shoot() throws GameException {
-        Bullet bullet = bulletPool.obtain();
-        bullet.set(this, bulletRegion, pos, bulletV, bulletHeight, worldBounds, damage, 0);
-        shootSound.play();
-    }
 
     public abstract void dmg();
 }

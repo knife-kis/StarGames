@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
 import ru.tarnovskiym.base.Ship;
+import ru.tarnovskiym.exception.GameException;
 import ru.tarnovskiym.math.Rect;
 import ru.tarnovskiym.pool.BulletPool;
 
@@ -24,6 +25,26 @@ public class Enemy extends Ship {
         if (getBottom() <= worldBounds.getBottom()) {
             destroy();
         }
+        if (pos.y >= worldBounds.getTop() - getHalfHeight())
+            pos.mulAdd(v0, delta);
+        else
+        if(pos.y <= worldBounds.getTop() - getHalfHeight()) {
+            pos.mulAdd(v, delta);
+            reloadTimer += delta;
+            if (reloadTimer >= reloadInterval) {
+                reloadTimer = 0f;
+                try {
+                    shoot();
+                } catch (GameException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+    private void shoot() throws GameException {
+        Bullet bullet = bulletPool.obtain();
+        bullet.set(this, bulletRegion, pos, bulletV, bulletHeight, worldBounds, damage, 0);
+        shootSound.play();
     }
 
     @Override
