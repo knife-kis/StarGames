@@ -36,10 +36,11 @@ public class Enemy extends Ship {
             float reloadInterval,
             Sound shootSound,
             int hp,
-            float height
+            float height,
+            Vector2 v
     ) {
         this.regions = regions;
-        this.v0.set(v0);
+        this.v0 = v0;
         this.bulletRegion = bulletRegion;
         this.bulletHeight = bulletHeight;
         this.bulletV.set(0, bulletVY);
@@ -48,7 +49,7 @@ public class Enemy extends Ship {
         this.reloadTimer = reloadInterval;
         this.shootSound = shootSound;
         this.hp = hp;
-        this.v.set(v0);
+        this.v = v;
         setHeightProportion(height);
     }
 }

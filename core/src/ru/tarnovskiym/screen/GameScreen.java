@@ -115,6 +115,7 @@ public class GameScreen extends BaseScreen {
         enemyPool.updateActiveSprites(delta);
         try {
             enemyEmitter.generate(delta);
+            enemyEmitter.slouMo(delta);
         } catch (GameException e) {
             e.printStackTrace();
         }
@@ -129,6 +130,10 @@ public class GameScreen extends BaseScreen {
             float minDist = enemy.getHalfWidth() + mainShip.getHalfWidth();
             if (mainShip.pos.dst(enemy.pos) < minDist) {
                 enemy.destroy();
+            }
+
+            if (enemy.pos.y <= worldBounds.getTop() - enemy.getHeight()) {
+
             }
         }
     }
