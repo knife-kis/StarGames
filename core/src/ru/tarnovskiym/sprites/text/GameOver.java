@@ -1,4 +1,4 @@
-package ru.tarnovskiym.sprites;
+package ru.tarnovskiym.sprites.text;
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 

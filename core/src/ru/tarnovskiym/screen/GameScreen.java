@@ -1,5 +1,6 @@
 package ru.tarnovskiym.screen;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
@@ -19,7 +20,8 @@ import ru.tarnovskiym.pool.ExplosionPool;
 import ru.tarnovskiym.sprites.Background;
 import ru.tarnovskiym.sprites.Bullet;
 import ru.tarnovskiym.sprites.Enemy;
-import ru.tarnovskiym.sprites.GameOver;
+import ru.tarnovskiym.sprites.botton.NewGame;
+import ru.tarnovskiym.sprites.text.GameOver;
 import ru.tarnovskiym.sprites.MainShip;
 import ru.tarnovskiym.sprites.Star;
 import ru.tarnovskiym.utils.EnemyEmitter;
@@ -38,6 +40,7 @@ public class GameScreen extends BaseScreen {
     private Star[] stars;
     private MainShip mainShip;
     private GameOver gameOver;
+    private NewGame newGame;
 
     private BulletPool bulletPool;
     private EnemyPool enemyPool;
@@ -91,6 +94,7 @@ public class GameScreen extends BaseScreen {
         }
         mainShip.resize(worldBounds);
         gameOver.resize(worldBounds);
+        newGame.resize(worldBounds);
     }
 
     @Override
@@ -147,6 +151,7 @@ public class GameScreen extends BaseScreen {
             }
             mainShip = new MainShip(atlas, bulletPool, explosionPool, laserSound);
             gameOver = new GameOver(atlas);
+            newGame = new NewGame(atlas);
         } catch (GameException e) {
             throw new RuntimeException(e);
         }
@@ -227,6 +232,7 @@ public class GameScreen extends BaseScreen {
                 break;
             case GAME_OVER:
                 gameOver.draw(batch);
+                newGame.draw(batch);
                 break;
         }
         explosionPool.drawActiveSprites(batch);

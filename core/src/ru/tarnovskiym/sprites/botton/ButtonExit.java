@@ -1,4 +1,4 @@
-package ru.tarnovskiym.sprites;
+package ru.tarnovskiym.sprites.botton;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;

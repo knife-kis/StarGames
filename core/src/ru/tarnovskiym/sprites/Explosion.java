@@ -9,7 +9,7 @@ import ru.tarnovskiym.exception.GameException;
 
 public class Explosion extends Sprite {
 
-    private static final float ANIMATE_INTERVAL = 0.017f;
+    private static final float ANIMATE_INTERVAL = 0.002f;
 
     private float animateTimer;
 

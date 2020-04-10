@@ -11,8 +11,8 @@ import ru.tarnovskiym.base.BaseScreen;
 import ru.tarnovskiym.exception.GameException;
 import ru.tarnovskiym.math.Rect;
 import ru.tarnovskiym.sprites.Background;
-import ru.tarnovskiym.sprites.ButtonExit;
-import ru.tarnovskiym.sprites.ButtonPlay;
+import ru.tarnovskiym.sprites.botton.ButtonExit;
+import ru.tarnovskiym.sprites.botton.ButtonPlay;
 import ru.tarnovskiym.sprites.Star;
 
 public class MenuScreen extends BaseScreen {
