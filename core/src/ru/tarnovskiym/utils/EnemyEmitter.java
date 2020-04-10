@@ -38,14 +38,13 @@ public class EnemyEmitter {
     private Sound shootSound;
     private TextureRegion bulletRegion;
 
-    private float generateInterval = 4f;
+    private float generateInterval = 2f;
     private float generateTimer;
 
     private final TextureRegion[] enemySmallRegion;
     private final TextureRegion[] enemyMediumRegion;
     private final TextureRegion[] enemyBigRegion;
 
-    private final Vector2 enemyV0;
     private final Vector2 enemySmallV;
     private final Vector2 enemyMediumV;
     private final Vector2 enemyBigV;
@@ -63,23 +62,21 @@ public class EnemyEmitter {
         this.enemyMediumRegion = Regions.split(enemy1, 1, 2, 2);
         TextureRegion enemy2 = atlas.findRegion("enemy2");
         this.enemyBigRegion = Regions.split(enemy2, 1, 2, 2);
-        this.enemyV0 = new Vector2(0, -0.6f);
-        this.enemySmallV = new Vector2(0, -0.25f);
-        this.enemyMediumV = new Vector2(0, -0.1f);
+        this.enemySmallV = new Vector2(0, -0.2f);
+        this.enemyMediumV = new Vector2(0, -0.03f);
         this.enemyBigV = new Vector2(0, -0.005f);
     }
 
-
-    public void generate(float delta) throws GameException {
+    public void generate(float delta) {
         generateTimer += delta;
         if (generateTimer >= generateInterval) {
             generateTimer = 0f;
             Enemy enemy = enemyPool.obtain();
             float type = (float) Math.random();
-            if (type < 0.6f) {
+            if (type < 0.5f) {
                 enemy.set(
                         enemySmallRegion,
-                        enemyV0,
+                        enemySmallV,
                         bulletRegion,
                         ENEMY_SMALL_BULLET_HEIGHT,
                         ENEMY_SMALL_BULLET_VY,
@@ -87,13 +84,12 @@ public class EnemyEmitter {
                         ENEMY_SMALL_RELOAD_INTERVAL,
                         shootSound,
                         ENEMY_SMALL_HP,
-                        ENEMY_SMALL_HEIGHT,
-                        enemySmallV
+                        ENEMY_SMALL_HEIGHT
                 );
-            } else if (type < 0.85f) {
+            } else if (type < 0.8f) {
                 enemy.set(
                         enemyMediumRegion,
-                        enemyV0,
+                        enemyMediumV,
                         bulletRegion,
                         ENEMY_MEDIUM_BULLET_HEIGHT,
                         ENEMY_MEDIUM_BULLET_VY,
@@ -101,13 +97,12 @@ public class EnemyEmitter {
                         ENEMY_MEDIUM_RELOAD_INTERVAL,
                         shootSound,
                         ENEMY_MEDIUM_HP,
-                        ENEMY_MEDIUM_HEIGHT,
-                        enemyMediumV
+                        ENEMY_MEDIUM_HEIGHT
                 );
             } else {
                 enemy.set(
                         enemyBigRegion,
-                        enemyV0,
+                        enemyBigV,
                         bulletRegion,
                         ENEMY_BIG_BULLET_HEIGHT,
                         ENEMY_BIG_BULLET_VY,
@@ -115,8 +110,7 @@ public class EnemyEmitter {
                         ENEMY_BIG_RELOAD_INTERVAL,
                         shootSound,
                         ENEMY_BIG_HP,
-                        ENEMY_BIG_HEIGHT,
-                        enemyBigV
+                        ENEMY_BIG_HEIGHT
                 );
             }
             enemy.pos.x = Rnd.nextFloat(worldBounds.getLeft() + enemy.getHalfWidth(), worldBounds.getRight() - enemy.getHalfWidth());

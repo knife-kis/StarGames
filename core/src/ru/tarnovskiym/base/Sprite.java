@@ -8,7 +8,7 @@ import ru.tarnovskiym.exception.GameException;
 import ru.tarnovskiym.math.Rect;
 import ru.tarnovskiym.utils.Regions;
 
-public class    Sprite extends Rect {
+public class Sprite extends Rect {
 
     protected float angle;
     protected float scale = 1f;

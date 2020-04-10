@@ -1,6 +1,5 @@
 package ru.tarnovskiym.sprites;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -10,33 +9,36 @@ import ru.tarnovskiym.base.Ship;
 import ru.tarnovskiym.exception.GameException;
 import ru.tarnovskiym.math.Rect;
 import ru.tarnovskiym.pool.BulletPool;
+import ru.tarnovskiym.pool.ExplosionPool;
 
 public class MainShip extends Ship {
 
+    private static final int HP = 10;
     private static final float SHIP_HEIGHT = 0.15f;
     private static final float BOTTOM_MARGIN = 0.05f;
     private static final int INVALID_POINTER = -1;
 
     private boolean pressedLeft;
     private boolean pressedRight;
-    private Sound shootSound;
 
     private int leftPointer = INVALID_POINTER;
     private int rightPointer = INVALID_POINTER;
 
-    public MainShip(TextureAtlas atlas, BulletPool bulletPool) throws GameException {
+    public MainShip(TextureAtlas atlas, BulletPool bulletPool, ExplosionPool explosionPool, Sound shootSound) throws GameException {
         super(atlas.findRegion("main_ship"), 1, 2, 2);
         this.bulletPool = bulletPool;
-        shootSound = Gdx.audio.newSound(Gdx.files.internal("sounds/laser.wav"));
+        this.explosionPool = explosionPool;
+        this.shootSound = shootSound;
         bulletRegion = atlas.findRegion("bulletMainShip");
         bulletV = new Vector2(0, 0.5f);
+        bulletPos = new Vector2();
         v0 = new Vector2(0.5f, 0);
         v = new Vector2();
         reloadInterval = 0.2f;
         reloadTimer = reloadInterval;
         bulletHeight = 0.01f;
         damage = 1;
-        hp = 10;
+        hp = HP;
     }
 
     @Override
@@ -48,8 +50,17 @@ public class MainShip extends Ship {
 
     @Override
     public void update(float delta) {
-        pos.mulAdd(v, delta);
-        mowing(worldBounds);
+        super.update(delta);
+        bulletPos.set(pos.x, pos.y + getHalfHeight());
+        autoShoot(delta);
+        if (getLeft() < worldBounds.getLeft()) {
+            setLeft(worldBounds.getLeft());
+            stop();
+        }
+        if (getRight() > worldBounds.getRight()) {
+            setRight(worldBounds.getRight());
+            stop();
+        }
     }
 
     @Override
@@ -91,70 +102,50 @@ public class MainShip extends Ship {
     }
 
     public boolean keyDown(int keycode) {
-        if ((keycode == Input.Keys.A) || (keycode == Input.Keys.LEFT)) {
-            pressedLeft = true;
-            moveLeft();
-        }
-        if ((keycode == Input.Keys.D) || (keycode == Input.Keys.RIGHT)) {
-            pressedRight = true;
-            moveRight();
-        }
-        if (keycode == Input.Keys.UP) {
-            shoot();
-
+        switch (keycode) {
+            case Input.Keys.A:
+            case Input.Keys.LEFT:
+                pressedLeft = true;
+                moveLeft();
+                break;
+            case Input.Keys.D:
+            case Input.Keys.RIGHT:
+                pressedRight = true;
+                moveRight();
+                break;
         }
         return false;
     }
 
     public boolean keyUp(int keycode) {
-        if ((keycode == Input.Keys.A) || (keycode == Input.Keys.LEFT)) {
-            pressedLeft = false;
-            if (pressedRight) {
-                moveRight();
-            } else {
-                stop();
-            }
-        }
-        if ((keycode == Input.Keys.D) || (keycode == Input.Keys.RIGHT)) {
-            pressedRight = false;
-            if (pressedLeft) {
-                moveLeft();
-            } else {
-                stop();
-            }
+        switch (keycode) {
+            case Input.Keys.A:
+            case Input.Keys.LEFT:
+                pressedLeft = false;
+                if (pressedRight) {
+                    moveRight();
+                } else {
+                    stop();
+                }
+                break;
+            case Input.Keys.D:
+            case Input.Keys.RIGHT:
+                pressedRight = false;
+                if (pressedLeft) {
+                    moveLeft();
+                } else {
+                    stop();
+                }
+                break;
         }
         return false;
     }
 
-    public void shoot() {
-        Bullet bullet = null;
-        try {
-            bullet = bulletPool.obtain();
-        } catch (GameException e) {
-            e.printStackTrace();
-        }
-        bullet.set(this, bulletRegion, pos, bulletV, 0.01f, worldBounds, 1, 1);
-        shootSound.play();
-    }
-
-    @Override
-    public void dmg() {
-
-    }
-
-    private void mowing(Rect worldBounds) {
-        if (getLeft() < worldBounds.getLeft()) {
-            setLeft(worldBounds.getLeft());
-            stop();
-        }
-        if (getRight() > worldBounds.getRight()) {
-            setRight(worldBounds.getRight());
-            stop();
-        }
-    }
-
-    public void disposeMusik(){
-        shootSound.dispose();
+    public boolean isBulletCollision(Rect bullet) {
+        return !(bullet.getRight() < getLeft()
+                || bullet.getLeft() > getRight()
+                || bullet.getBottom() > pos.y
+                || bullet.getTop() < getBottom());
     }
 
     private void moveRight() {
