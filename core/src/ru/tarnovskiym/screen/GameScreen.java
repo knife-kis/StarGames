@@ -28,11 +28,8 @@ import ru.tarnovskiym.utils.EnemyEmitter;
 
 public class GameScreen extends BaseScreen {
 
-
-
-
     private enum State {PLAYING, PAUSE, GAME_OVER;}
-    private static final int STAR_COUNT = 64;
+    private static final int STAR_COUNT = 128;
 
     private Texture bg;
 
