@@ -28,31 +28,34 @@ import ru.tarnovskiym.utils.EnemyEmitter;
 
 public class GameScreen extends BaseScreen {
 
-    private enum State {PLAYING, PAUSE, GAME_OVER}
 
+
+
+    private enum State {PLAYING, PAUSE, GAME_OVER;}
     private static final int STAR_COUNT = 64;
 
     private Texture bg;
+
     private Background background;
 
     private TextureAtlas atlas;
-
     private Star[] stars;
+
     private MainShip mainShip;
+
     private GameOver gameOver;
     private NewGame newGame;
-
     private BulletPool bulletPool;
     private EnemyPool enemyPool;
+
     private ExplosionPool explosionPool;
     private EnemyEmitter enemyEmitter;
-
     private Music music;
     private Sound laserSound;
+
     private Sound bulletSound;
     private Sound explosion;
     private State state;
-
     @Override
     public void show() {
         super.show();
@@ -126,10 +129,14 @@ public class GameScreen extends BaseScreen {
         }
         return false;
     }
+
     @Override
     public boolean touchDown(Vector2 touch, int pointer, int button) {
         if (state == State.PLAYING) {
             mainShip.touchDown(touch, pointer, button);
+        }
+        if (state == State.GAME_OVER){
+            newGame.touchDown(touch, pointer, button);
         }
         return false;
     }
@@ -139,9 +146,11 @@ public class GameScreen extends BaseScreen {
         if (state == State.PLAYING) {
             mainShip.touchUp(touch, pointer, button);
         }
+        if (state == State.GAME_OVER){
+            newGame.touchUp(touch, pointer, button);
+        }
         return false;
     }
-
     private void initSprites() {
         try {
             background = new Background(bg);
@@ -151,7 +160,7 @@ public class GameScreen extends BaseScreen {
             }
             mainShip = new MainShip(atlas, bulletPool, explosionPool, laserSound);
             gameOver = new GameOver(atlas);
-            newGame = new NewGame(atlas);
+            newGame = new NewGame(atlas, this);
         } catch (GameException e) {
             throw new RuntimeException(e);
         }
@@ -237,5 +246,13 @@ public class GameScreen extends BaseScreen {
         }
         explosionPool.drawActiveSprites(batch);
         batch.end();
+    }
+
+    public void chengeStatePlay() {
+        enemyPool.dispose();
+        mainShip.setHp(10);
+        mainShip.life();
+        bulletPool.dispose();
+        state = State.PLAYING;
     }
 }

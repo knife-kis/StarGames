@@ -27,12 +27,12 @@ public abstract class Ship extends Sprite {
     protected int hp;
 
     protected Vector2 v0;
-    protected Vector2 v;
 
+    protected Vector2 v;
     protected float reloadInterval;
+
     protected float reloadTimer;
     protected float damageAnimateTimer = DAMAGE_ANIMATE_INTERVAL;
-
     public Ship() {
     }
 
@@ -88,4 +88,7 @@ public abstract class Ship extends Sprite {
         explosion.set(pos, getHeight());
     }
 
+    public void setHp(int hp) {
+        this.hp = hp;
+    }
 }
