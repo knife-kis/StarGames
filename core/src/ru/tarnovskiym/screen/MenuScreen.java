@@ -82,7 +82,7 @@ public class MenuScreen extends BaseScreen {
 
     private void initSprites() {
         try {
-            background = new Background(bg, 1f);
+            background = new Background(bg);
             stars = new Star[STAR_COUNT];
             for (int i = 0; i < STAR_COUNT; i++) {
                 stars[i] =  new Star(atlas);

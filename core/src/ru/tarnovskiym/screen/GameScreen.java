@@ -20,6 +20,7 @@ import ru.tarnovskiym.pool.ExplosionPool;
 import ru.tarnovskiym.sprites.Background;
 import ru.tarnovskiym.sprites.Bullet;
 import ru.tarnovskiym.sprites.Enemy;
+import ru.tarnovskiym.sprites.Galaxy;
 import ru.tarnovskiym.sprites.botton.NewGame;
 import ru.tarnovskiym.sprites.text.GameOver;
 import ru.tarnovskiym.sprites.MainShip;
@@ -35,7 +36,7 @@ public class GameScreen extends BaseScreen {
     private Texture galaxy;
 
     private Background background;
-    private Background backgroundGalaxy;
+    private Galaxy backgroundGalaxy;
 
     private TextureAtlas atlas;
     private Star[] stars;
@@ -89,7 +90,6 @@ public class GameScreen extends BaseScreen {
         super.resize(worldBounds);
         background.resize(worldBounds);
         backgroundGalaxy.resize(worldBounds);
-        backgroundGalaxy.pos.set(worldBounds.getTop() - 0.32f, worldBounds.getRight() - 0.1f);
         for (Star star : stars) {
             star.resize(worldBounds);
         }
@@ -148,8 +148,8 @@ public class GameScreen extends BaseScreen {
     }
     private void initSprites() {
         try {
-            background = new Background(bg, 1f);
-            backgroundGalaxy = new Background(galaxy, 0.3f);
+            background = new Background(bg);
+            backgroundGalaxy = new Galaxy(galaxy);
             stars = new Star[STAR_COUNT];
             for (int i = 0; i < STAR_COUNT; i++) {
                 stars[i] =  new Star(atlas);
@@ -166,6 +166,7 @@ public class GameScreen extends BaseScreen {
         for (Star star : stars) {
             star.update(delta);
         }
+        backgroundGalaxy.update(delta);
         explosionPool.updateActiveSprites(delta);
         if (state == State.PLAYING) {
             mainShip.update(delta);
@@ -226,9 +227,7 @@ public class GameScreen extends BaseScreen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
         background.draw(batch);
-        batch.setColor(1,1,1,0.4f);
         backgroundGalaxy.draw(batch);
-        batch.setColor(1,1,1,1f);
         for (Star star : stars) {
             star.draw(batch);
         }
