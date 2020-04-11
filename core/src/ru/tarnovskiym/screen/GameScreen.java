@@ -78,14 +78,10 @@ public class GameScreen extends BaseScreen {
     @Override
     public void render(float delta) {
         super.render(delta);
-        try {
-            update(delta);
-            checkCollisions();
-            freeAllDestroyed();
-            draw();
-        } catch (GameException e) {
-            e.printStackTrace();
-        }
+        update(delta);
+        checkCollisions();
+        freeAllDestroyed();
+        draw();
     }
 
     @Override
@@ -116,17 +112,13 @@ public class GameScreen extends BaseScreen {
 
     @Override
     public boolean keyDown(int keycode) {
-        if (state == State.PLAYING) {
-            mainShip.keyDown(keycode);
-        }
+        mainShip.keyDown(keycode);
         return false;
     }
 
     @Override
     public boolean keyUp(int keycode) {
-        if (state == State.PLAYING) {
-            mainShip.keyUp(keycode);
-        }
+        mainShip.keyUp(keycode);
         return false;
     }
 
@@ -166,7 +158,7 @@ public class GameScreen extends BaseScreen {
         }
     }
 
-    private void update(float delta) throws GameException {
+    private void update(float delta){
         for (Star star : stars) {
             star.update(delta);
         }
@@ -180,7 +172,7 @@ public class GameScreen extends BaseScreen {
 
     }
 
-    private void checkCollisions() throws GameException {
+    private void checkCollisions()  {
         if (state != State.PLAYING) {
             return;
         }

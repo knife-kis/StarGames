@@ -153,7 +153,7 @@ public class MainShip extends Ship {
     }
 
     private void moveLeft() {
-        v.set(v0).rotate(180);
+            v.set(v0).rotate(180);
     }
 
     private void stop() {
