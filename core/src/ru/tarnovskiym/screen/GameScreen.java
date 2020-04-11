@@ -32,8 +32,10 @@ public class GameScreen extends BaseScreen {
     private static final int STAR_COUNT = 128;
 
     private Texture bg;
+    private Texture galaxy;
 
     private Background background;
+    private Background backgroundGalaxy;
 
     private TextureAtlas atlas;
     private Star[] stars;
@@ -56,6 +58,7 @@ public class GameScreen extends BaseScreen {
     @Override
     public void show() {
         super.show();
+        galaxy = new Texture("textures/galaxy.png");
         bg = new Texture("textures/bg.png");
         atlas = new TextureAtlas(Gdx.files.internal("textures/mainAtlas.tpack"));
         laserSound = Gdx.audio.newSound(Gdx.files.internal("sounds/laser.wav"));
@@ -85,6 +88,8 @@ public class GameScreen extends BaseScreen {
     public void resize(Rect worldBounds) {
         super.resize(worldBounds);
         background.resize(worldBounds);
+        backgroundGalaxy.resize(worldBounds);
+        backgroundGalaxy.pos.set(worldBounds.getTop() - 0.32f, worldBounds.getRight() - 0.1f);
         for (Star star : stars) {
             star.resize(worldBounds);
         }
@@ -96,6 +101,7 @@ public class GameScreen extends BaseScreen {
     @Override
     public void dispose() {
         bg.dispose();
+        galaxy.dispose();
         atlas.dispose();
         bulletPool.dispose();
         enemyPool.dispose();
@@ -142,7 +148,8 @@ public class GameScreen extends BaseScreen {
     }
     private void initSprites() {
         try {
-            background = new Background(bg);
+            background = new Background(bg, 1f);
+            backgroundGalaxy = new Background(galaxy, 0.3f);
             stars = new Star[STAR_COUNT];
             for (int i = 0; i < STAR_COUNT; i++) {
                 stars[i] =  new Star(atlas);
@@ -219,6 +226,9 @@ public class GameScreen extends BaseScreen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
         background.draw(batch);
+        batch.setColor(1,1,1,0.4f);
+        backgroundGalaxy.draw(batch);
+        batch.setColor(1,1,1,1f);
         for (Star star : stars) {
             star.draw(batch);
         }

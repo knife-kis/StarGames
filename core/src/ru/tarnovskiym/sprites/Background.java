@@ -9,13 +9,16 @@ import ru.tarnovskiym.math.Rect;
 
 public class Background extends Sprite {
 
-    public Background(Texture texture) throws GameException {
+    float worldSize;
+
+    public Background(Texture texture, float worldSize) throws GameException {
         super(new TextureRegion(texture));
+        this.worldSize = worldSize;
     }
 
     @Override
     public void resize(Rect worldBounds) {
-        setHeightProportion(1f);
+        setHeightProportion(worldSize);
         pos.set(worldBounds.pos);
     }
 }
