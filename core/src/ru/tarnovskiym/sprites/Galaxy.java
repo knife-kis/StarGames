@@ -8,10 +8,12 @@ import com.badlogic.gdx.math.Vector2;
 import ru.tarnovskiym.base.Sprite;
 import ru.tarnovskiym.exception.GameException;
 import ru.tarnovskiym.math.Rect;
+import ru.tarnovskiym.math.Rnd;
 
 public class Galaxy extends Sprite {
 
     private Vector2 v;
+    private Rect worldBounds;
 
     public Galaxy(Texture texture) throws GameException {
         super(new TextureRegion(texture));
@@ -20,6 +22,7 @@ public class Galaxy extends Sprite {
 
     @Override
     public void resize(Rect worldBounds) {
+        this.worldBounds = worldBounds;
         setHeightProportion(0.4f);
         pos.set(worldBounds.pos);
         pos.set(worldBounds.getTop() - 0.32f, worldBounds.getRight() - 0.1f);
@@ -36,5 +39,8 @@ public class Galaxy extends Sprite {
     public void update(float delta) {
         super.update(delta);
         pos.mulAdd(v,delta);
+        if (getTop() < worldBounds.getBottom()) {
+            setBottom(worldBounds.getTop());
+        }
     }
 }

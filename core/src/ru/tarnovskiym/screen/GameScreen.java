@@ -1,6 +1,5 @@
 package ru.tarnovskiym.screen;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
@@ -11,12 +10,14 @@ import com.badlogic.gdx.math.Vector2;
 
 import java.util.List;
 
+import ru.tarnovskiym.base.Assets;
 import ru.tarnovskiym.base.BaseScreen;
 import ru.tarnovskiym.exception.GameException;
 import ru.tarnovskiym.math.Rect;
 import ru.tarnovskiym.pool.BulletPool;
 import ru.tarnovskiym.pool.EnemyPool;
 import ru.tarnovskiym.pool.ExplosionPool;
+import ru.tarnovskiym.pool.ParticlePool;
 import ru.tarnovskiym.sprites.Background;
 import ru.tarnovskiym.sprites.Bullet;
 import ru.tarnovskiym.sprites.Enemy;
@@ -29,7 +30,7 @@ import ru.tarnovskiym.utils.EnemyEmitter;
 
 public class GameScreen extends BaseScreen {
 
-    private enum State {PLAYING, PAUSE, GAME_OVER;}
+    public enum State {PLAYING, PAUSE, GAME_OVER;}
     private static final int STAR_COUNT = 128;
 
     private Texture bg;
@@ -47,6 +48,7 @@ public class GameScreen extends BaseScreen {
     private NewGame newGame;
     private BulletPool bulletPool;
     private EnemyPool enemyPool;
+    private ParticlePool particlePool;
 
     private ExplosionPool explosionPool;
     private EnemyEmitter enemyEmitter;
@@ -62,12 +64,14 @@ public class GameScreen extends BaseScreen {
         galaxy = new Texture("textures/galaxy.png");
         bg = new Texture("textures/bg.png");
         atlas = new TextureAtlas(Gdx.files.internal("textures/mainAtlas.tpack"));
+        Assets.getInstance().loadAssets(State.PLAYING);
         laserSound = Gdx.audio.newSound(Gdx.files.internal("sounds/laser.wav"));
         bulletSound = Gdx.audio.newSound(Gdx.files.internal("sounds/bullet.wav"));
         explosion = Gdx.audio.newSound(Gdx.files.internal("sounds/explosion.wav"));
         bulletPool = new BulletPool();
         explosionPool = new ExplosionPool(atlas, explosion);
-        enemyPool = new EnemyPool(bulletPool, explosionPool, worldBounds);
+        particlePool = new ParticlePool();
+        enemyPool = new EnemyPool(bulletPool, explosionPool, worldBounds, particlePool);
         enemyEmitter = new EnemyEmitter(atlas, enemyPool, worldBounds, bulletSound);
         music = Gdx.audio.newMusic(Gdx.files.internal("sounds/music.mp3"));
         music.setLooping(true);
@@ -173,6 +177,7 @@ public class GameScreen extends BaseScreen {
             bulletPool.updateActiveSprites(delta);
             enemyPool.updateActiveSprites(delta);
             enemyEmitter.generate(delta);
+            particlePool.update(delta);
         }
 
     }
@@ -236,6 +241,7 @@ public class GameScreen extends BaseScreen {
                 mainShip.draw(batch);
                 enemyPool.drawActiveSprites(batch);
                 bulletPool.drawActiveSprites(batch);
+                particlePool.render(batch);
                 break;
             case GAME_OVER:
                 gameOver.draw(batch);
