@@ -4,6 +4,7 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.StringBuilder;
 
 import ru.tarnovskiym.base.Ship;
 import ru.tarnovskiym.math.Rect;
@@ -15,6 +16,7 @@ import ru.tarnovskiym.pool.ParticlePool;
 public class Enemy extends Ship {
 
     ParticlePool particlePool;
+
 
     private final Vector2 descentV;
 
@@ -37,7 +39,6 @@ public class Enemy extends Ship {
         if (getTop() <= worldBounds.getTop()) {
             v.set(v0);
             autoShoot(delta);
-
             for (int i = 0; i < 5; i++) {
                 particlePool.setup(
                         pos.x, getTop(),

@@ -13,6 +13,7 @@ public class Assets {
     private static final Assets ourInstance = new Assets();
 
     public static Assets getInstance() {return ourInstance;   }
+
     private AssetManager assetManager;
     private TextureAtlas textureAtlas;
 
@@ -31,7 +32,6 @@ public class Assets {
         switch (type) {
             case PLAYING:
                 assetManager.load("textures/mainAtlas.tpack", TextureAtlas.class);
-
 //                createStandardFont(32);
                 assetManager.finishLoading();
                 textureAtlas = assetManager.get("textures/mainAtlas.tpack", TextureAtlas.class);

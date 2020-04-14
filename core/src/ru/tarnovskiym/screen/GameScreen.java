@@ -7,11 +7,13 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Align;
 
 import java.util.List;
 
 import ru.tarnovskiym.base.Assets;
 import ru.tarnovskiym.base.BaseScreen;
+import ru.tarnovskiym.base.Font;
 import ru.tarnovskiym.exception.GameException;
 import ru.tarnovskiym.math.Rect;
 import ru.tarnovskiym.pool.BulletPool;
@@ -30,8 +32,14 @@ import ru.tarnovskiym.utils.EnemyEmitter;
 
 public class GameScreen extends BaseScreen {
 
-    public enum State {PLAYING, PAUSE, GAME_OVER;}
-    private static final int STAR_COUNT = 128;
+    public enum State {PLAYING, PAUSE, GAME_OVER}
+
+    private static final int STAR_COUNT = 64;
+    private static final float FONT_MARGIN = 0.01f;
+    private static final float FONT_SIZE = 0.02f;
+    private static final String FRAGS = "Frags: ";
+    private static final String HP = "HP: ";
+    private static final String LEVEL = "Level: ";
 
     private Texture bg;
     private Texture galaxy;
@@ -40,30 +48,38 @@ public class GameScreen extends BaseScreen {
     private Galaxy backgroundGalaxy;
 
     private TextureAtlas atlas;
+
     private Star[] stars;
-
     private MainShip mainShip;
-
     private GameOver gameOver;
     private NewGame newGame;
+
     private BulletPool bulletPool;
     private EnemyPool enemyPool;
     private ParticlePool particlePool;
-
     private ExplosionPool explosionPool;
     private EnemyEmitter enemyEmitter;
+
     private Music music;
     private Sound laserSound;
-
     private Sound bulletSound;
     private Sound explosion;
     private State state;
+    private State prevState;
+
+    private Font font;
+    private StringBuilder sbFrags;
+    private StringBuilder sbHP;
+    private StringBuilder sbLevel;
+
+    private int frags;
+
     @Override
     public void show() {
         super.show();
         galaxy = new Texture("textures/galaxy.png");
         bg = new Texture("textures/bg.png");
-        atlas = new TextureAtlas(Gdx.files.internal("textures/mainAtlas.tpack"));
+//        atlas = new TextureAtlas(Gdx.files.internal("textures/mainAtlas.tpack"));
         Assets.getInstance().loadAssets(State.PLAYING);
         laserSound = Gdx.audio.newSound(Gdx.files.internal("sounds/laser.wav"));
         bulletSound = Gdx.audio.newSound(Gdx.files.internal("sounds/bullet.wav"));
@@ -73,11 +89,31 @@ public class GameScreen extends BaseScreen {
         particlePool = new ParticlePool();
         enemyPool = new EnemyPool(bulletPool, explosionPool, worldBounds, particlePool);
         enemyEmitter = new EnemyEmitter(atlas, enemyPool, worldBounds, bulletSound);
+        font = new Font("font/font.fnt", "font/font.png");
+        font.setSize(FONT_SIZE);
+        sbFrags = new StringBuilder();
+        sbHP = new StringBuilder();
+        sbLevel = new StringBuilder();
         music = Gdx.audio.newMusic(Gdx.files.internal("sounds/music.mp3"));
         music.setLooping(true);
         music.play();
         initSprites();
         state = State.PLAYING;
+        prevState = State.PLAYING;
+        frags = 0;
+    }
+
+    @Override
+    public void pause() {
+        prevState = state;
+        state = State.PAUSE;
+        music.pause();
+    }
+
+    @Override
+    public void resume() {
+        state = prevState;
+        music.play();
     }
 
     @Override
@@ -106,7 +142,7 @@ public class GameScreen extends BaseScreen {
     public void dispose() {
         bg.dispose();
         galaxy.dispose();
-        atlas.dispose();
+//        atlas.dispose();
         bulletPool.dispose();
         enemyPool.dispose();
         music.dispose();
@@ -119,13 +155,17 @@ public class GameScreen extends BaseScreen {
 
     @Override
     public boolean keyDown(int keycode) {
-        mainShip.keyDown(keycode);
+        if (state == State.PLAYING) {
+            mainShip.keyDown(keycode);
+        }
         return false;
     }
 
     @Override
     public boolean keyUp(int keycode) {
-        mainShip.keyUp(keycode);
+        if (state == State.PLAYING) {
+            mainShip.keyUp(keycode);
+        }
         return false;
     }
 
@@ -195,6 +235,7 @@ public class GameScreen extends BaseScreen {
             float minDist = enemy.getHalfWidth() + mainShip.getHalfWidth();
             if (mainShip.pos.dst(enemy.pos) < minDist) {
                 enemy.destroy();
+                frags++;
                 mainShip.damage(enemy.getDamage());
             }
             for (Bullet bullet : bulletList) {
@@ -204,6 +245,9 @@ public class GameScreen extends BaseScreen {
                 if (enemy.isBulletCollision(bullet)) {
                     enemy.damage(bullet.getDamage());
                     bullet.destroy();
+                    if (enemy.isDestroyed()) {
+                        frags++;
+                    }
                 }
             }
         }
@@ -249,14 +293,25 @@ public class GameScreen extends BaseScreen {
                 break;
         }
         explosionPool.drawActiveSprites(batch);
+        printInfo();
         batch.end();
     }
 
     public void chengeStatePlay() {
-        enemyPool.dispose();
-        mainShip.setHp(10);
-        mainShip.life();
-        bulletPool.dispose();
         state = State.PLAYING;
+        mainShip.startNewGame(worldBounds);
+        frags = 0;
+        bulletPool.freeAllActiveObjects();
+        enemyPool.freeAllActiveObjects();
+        explosionPool.freeAllActiveObjects();
+    }
+
+    private void printInfo() {
+        sbFrags.setLength(0);
+        sbHP.setLength(0);
+        sbLevel.setLength(0);
+        font.draw(batch, sbFrags.append(FRAGS).append(frags), worldBounds.getLeft() + FONT_MARGIN, worldBounds.getTop() - FONT_MARGIN);
+        font.draw(batch, sbHP.append(HP).append(mainShip.getHp()), worldBounds.pos.x, worldBounds.getTop() - FONT_MARGIN, Align.center);
+        font.draw(batch, sbLevel.append(LEVEL).append(enemyEmitter.getLevel()), worldBounds.getRight() - FONT_MARGIN, worldBounds.getTop() - FONT_MARGIN, Align.right);
     }
 }

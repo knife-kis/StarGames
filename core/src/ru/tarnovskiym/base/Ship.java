@@ -14,6 +14,8 @@ import ru.tarnovskiym.sprites.Explosion;
 public abstract class Ship extends Sprite {
 
     private static final float DAMAGE_ANIMATE_INTERVAL = 0.1f;
+    private static final float DELTA_COEFF = 1.2f;
+    private float savedDelta = 0f;
 
     protected Rect worldBounds;
     protected BulletPool bulletPool;
@@ -42,6 +44,12 @@ public abstract class Ship extends Sprite {
 
     @Override
     public void update(float delta) {
+        if (savedDelta == 0f) {
+            savedDelta = delta;
+        }
+        if (delta > savedDelta*DELTA_COEFF) {
+            delta = savedDelta;
+        }
         pos.mulAdd(v, delta);
         damageAnimateTimer += delta;
         if (damageAnimateTimer >= DAMAGE_ANIMATE_INTERVAL) {
@@ -54,6 +62,9 @@ public abstract class Ship extends Sprite {
         super.destroy();
         frame = 0;
         boom();
+    }
+    public int getHp() {
+        return hp;
     }
 
     public void damage(int damage) {
@@ -89,7 +100,4 @@ public abstract class Ship extends Sprite {
         explosion.set(pos, getHeight());
     }
 
-    public void setHp(int hp) {
-        this.hp = hp;
-    }
 }
