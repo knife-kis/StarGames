@@ -39,19 +39,24 @@ public class Enemy extends Ship {
         if (getTop() <= worldBounds.getTop()) {
             v.set(v0);
             autoShoot(delta);
-            for (int i = 0; i < 5; i++) {
-                particlePool.setup(
-                        pos.x, getTop(),
-                        0, v.y * 2.0f + Rnd.nextFloat(0.2f, 4.6f),
-                        0.04f,
-                        0.0001f, 0.002f,
-                        0.7f, 0.5f, 0.0f, 1.0f,
-                        1.0f, 1.0f, 1.0f, 0.1f
-                );
-            }
+            fireShow();
+
         }
         if (getBottom() <= worldBounds.getBottom()) {
             destroy();
+        }
+    }
+
+    private void fireShow() {
+        for (int i = 0; i < 5; i++) {
+            particlePool.setup(
+                    pos.x, getTop(),
+                    0, v.y * 2.0f + Rnd.nextFloat(0.2f, 4.6f),
+                    0.04f,
+                    0.0001f, 0.002f,
+                    0.7f, 0.5f, 0.0f, 1.0f,
+                    1.0f, 1.0f, 1.0f, 0.1f
+            );
         }
     }
 

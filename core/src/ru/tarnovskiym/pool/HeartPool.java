@@ -7,17 +7,14 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 
 import ru.tarnovskiym.base.ObjectPool;
-import ru.tarnovskiym.base.Sprite;
-import ru.tarnovskiym.base.SpritesPool;
-import ru.tarnovskiym.base.Assets;
 import ru.tarnovskiym.sprites.Particle;
 
-public class ParticlePool extends ObjectPool<Particle> {
+public class HeartPool extends ObjectPool<Particle> {
 
     private TextureRegion oneParticle;
 
-    public ParticlePool(TextureAtlas atlas) {
-        this.oneParticle = atlas.findRegion("star");
+    public HeartPool(TextureAtlas atlas) {
+        this.oneParticle = atlas.findRegion("1heart");
     }
 
     @Override

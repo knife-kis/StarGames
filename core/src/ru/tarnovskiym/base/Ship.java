@@ -26,7 +26,7 @@ public abstract class Ship extends Sprite {
     protected float bulletHeight;
     protected int damage;
     protected Sound shootSound;
-    protected int hp;
+    protected float hp;
 
     protected Vector2 v0;
 
@@ -63,7 +63,7 @@ public abstract class Ship extends Sprite {
         frame = 0;
         boom();
     }
-    public int getHp() {
+    public float getHp() {
         return hp;
     }
 
