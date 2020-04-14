@@ -8,7 +8,6 @@ import java.util.List;
 public abstract class SpritesPool<T extends Sprite> {
 
     protected final List<T> activeObjects = new ArrayList<>();
-
     protected final List<T> freeObjects = new ArrayList<>();
 
     protected abstract T newObject();
@@ -66,5 +65,10 @@ public abstract class SpritesPool<T extends Sprite> {
             freeObjects.add(object);
         }
         System.out.println(this.getClass().getName() + " active/free: " + activeObjects.size() + "/" + freeObjects.size());
+    }
+
+    public void freeAllActiveObjects() {
+        freeObjects.addAll(activeObjects);
+        activeObjects.clear();
     }
 }

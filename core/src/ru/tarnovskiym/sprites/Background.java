@@ -9,6 +9,7 @@ import ru.tarnovskiym.math.Rect;
 
 public class Background extends Sprite {
 
+
     public Background(Texture texture) throws GameException {
         super(new TextureRegion(texture));
     }

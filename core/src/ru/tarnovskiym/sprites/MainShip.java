@@ -13,7 +13,7 @@ import ru.tarnovskiym.pool.ExplosionPool;
 
 public class MainShip extends Ship {
 
-    private static final int HP = 10;
+    private static final int HP = 100;
     private static final float SHIP_HEIGHT = 0.15f;
     private static final float BOTTOM_MARGIN = 0.05f;
     private static final int INVALID_POINTER = -1;
@@ -39,6 +39,17 @@ public class MainShip extends Ship {
         bulletHeight = 0.01f;
         damage = 1;
         hp = HP;
+    }
+
+    public void startNewGame(Rect worldBounds) {
+        flushDestroy();
+        hp = HP;
+        pressedLeft = false;
+        pressedRight = false;
+        leftPointer = INVALID_POINTER;
+        rightPointer = INVALID_POINTER;
+        stop();
+        pos.x = worldBounds.pos.x;
     }
 
     @Override
@@ -153,7 +164,7 @@ public class MainShip extends Ship {
     }
 
     private void moveLeft() {
-        v.set(v0).rotate(180);
+            v.set(v0).rotate(180);
     }
 
     private void stop() {

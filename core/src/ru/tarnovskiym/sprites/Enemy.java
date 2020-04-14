@@ -2,21 +2,29 @@ package ru.tarnovskiym.sprites;
 
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.StringBuilder;
 
 import ru.tarnovskiym.base.Ship;
 import ru.tarnovskiym.math.Rect;
+import ru.tarnovskiym.math.Rnd;
 import ru.tarnovskiym.pool.BulletPool;
 import ru.tarnovskiym.pool.ExplosionPool;
+import ru.tarnovskiym.pool.ParticlePool;
 
 public class Enemy extends Ship {
 
+    ParticlePool particlePool;
+
+
     private final Vector2 descentV;
 
-    public Enemy(BulletPool bulletPool, ExplosionPool explosionPool, Rect worldBounds) {
+    public Enemy(BulletPool bulletPool, ExplosionPool explosionPool, Rect worldBounds, ParticlePool particlePool) {
         this.bulletPool = bulletPool;
         this.explosionPool = explosionPool;
         this.worldBounds = worldBounds;
+        this.particlePool = particlePool;
         v = new Vector2();
         v0 = new Vector2();
         bulletV = new Vector2();
@@ -31,6 +39,16 @@ public class Enemy extends Ship {
         if (getTop() <= worldBounds.getTop()) {
             v.set(v0);
             autoShoot(delta);
+            for (int i = 0; i < 5; i++) {
+                particlePool.setup(
+                        pos.x, getTop(),
+                        0, v.y * 2.0f + Rnd.nextFloat(0.2f, 4.6f),
+                        0.04f,
+                        0.0001f, 0.002f,
+                        0.7f, 0.5f, 0.0f, 1.0f,
+                        1.0f, 1.0f, 1.0f, 0.1f
+                );
+            }
         }
         if (getBottom() <= worldBounds.getBottom()) {
             destroy();

@@ -17,7 +17,7 @@ import ru.tarnovskiym.sprites.Star;
 
 public class MenuScreen extends BaseScreen {
 
-    private static final int STAR_COUNT = 256;
+    private static final int STAR_COUNT = 512;
 
     private final Game game;
 

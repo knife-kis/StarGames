@@ -14,7 +14,7 @@ public class Sprite extends Rect {
     protected float scale = 1f;
     protected TextureRegion[] regions;
     protected int frame;
-    private boolean destroyed = false;
+    protected boolean destroyed = false;
 
     public Sprite() {
 
@@ -89,6 +89,9 @@ public class Sprite extends Rect {
 
     public void destroy() {
         destroyed = true;
+    }
+    public void life() {
+        destroyed = false;
     }
 
     public void flushDestroy() {

@@ -14,6 +14,7 @@ public class Star extends Sprite {
 
     private Vector2 v;
     private Rect worldBounds;
+    private float scale;
 
     private float animateInterval = 0.5f;
     private float animateTimer;
@@ -21,15 +22,16 @@ public class Star extends Sprite {
     public Star(TextureAtlas atlas) throws GameException {
         super(atlas.findRegion("star"));
         float vx = Rnd.nextFloat(-0.005f, 0.005f);
-        float vy = Rnd.nextFloat(-0.05f, -0.1f);
+        float vy = Rnd.nextFloat(-0.008f, -0.1f);
         v = new Vector2(vx, vy);
         animateTimer = Rnd.nextFloat(0, 0.5f);
+        this.scale =  vy / 9.5f;
     }
 
     @Override
     public void resize(Rect worldBounds) {
         this.worldBounds = worldBounds;
-        setHeightProportion(HEIGHT);
+        setHeightProportion(scale);
         float posX = Rnd.nextFloat(worldBounds.getLeft(), worldBounds.getRight());
         float posY = Rnd.nextFloat(worldBounds.getBottom(), worldBounds.getTop());
         this.pos.set(posX, posY);
@@ -46,6 +48,7 @@ public class Star extends Sprite {
         }
         if (getTop() < worldBounds.getBottom()) {
             setBottom(worldBounds.getTop());
+            pos.x = Rnd.nextFloat(-0.35f, 0.35f);
         }
         if (getLeft() > worldBounds.getRight()) {
             setRight(worldBounds.getLeft());
