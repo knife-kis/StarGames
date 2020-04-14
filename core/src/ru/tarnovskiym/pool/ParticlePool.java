@@ -2,6 +2,7 @@ package ru.tarnovskiym.pool;
 
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 
@@ -29,8 +30,8 @@ public class ParticlePool extends ObjectPool<Particle> {
         return effectBuilder;
     }
 
-    public ParticlePool() {
-        this.oneParticle = Assets.getInstance().getAtlas().findRegion("star");
+    public ParticlePool(TextureAtlas atlas) {
+        this.oneParticle = atlas.findRegion("star");
         this.effectBuilder = new EffectBuilder();
     }
 

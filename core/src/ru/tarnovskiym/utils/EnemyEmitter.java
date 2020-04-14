@@ -58,12 +58,12 @@ public class EnemyEmitter {
         this.worldBounds = worldBounds;
         this.shootSound = shootSound;
         this.enemyPool = enemyPool;
-        this.bulletRegion = Assets.getInstance().getAtlas().findRegion("bulletEnemy");
-        TextureRegion enemy0 = Assets.getInstance().getAtlas().findRegion("enemy0");
+        this.bulletRegion = atlas.findRegion("bulletEnemy");
+        TextureRegion enemy0 = atlas.findRegion("enemy0");
         this.enemySmallRegion = Regions.split(enemy0, 1, 2, 2);
-        TextureRegion enemy1 = Assets.getInstance().getAtlas().findRegion("enemy1");
+        TextureRegion enemy1 = atlas.findRegion("enemy1");
         this.enemyMediumRegion = Regions.split(enemy1, 1, 2, 2);
-        TextureRegion enemy2 = Assets.getInstance().getAtlas().findRegion("enemy2");
+        TextureRegion enemy2 = atlas.findRegion("enemy2");
         this.enemyBigRegion = Regions.split(enemy2, 1, 2, 2);
         this.enemySmallV = new Vector2(0, -0.2f);
         this.enemyMediumV = new Vector2(0, -0.03f);

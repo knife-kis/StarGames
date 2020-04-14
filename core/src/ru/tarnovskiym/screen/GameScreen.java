@@ -11,7 +11,6 @@ import com.badlogic.gdx.utils.Align;
 
 import java.util.List;
 
-import ru.tarnovskiym.base.Assets;
 import ru.tarnovskiym.base.BaseScreen;
 import ru.tarnovskiym.base.Font;
 import ru.tarnovskiym.exception.GameException;
@@ -24,6 +23,7 @@ import ru.tarnovskiym.sprites.Background;
 import ru.tarnovskiym.sprites.Bullet;
 import ru.tarnovskiym.sprites.Enemy;
 import ru.tarnovskiym.sprites.Galaxy;
+import ru.tarnovskiym.sprites.HeartHp;
 import ru.tarnovskiym.sprites.botton.NewGame;
 import ru.tarnovskiym.sprites.text.GameOver;
 import ru.tarnovskiym.sprites.MainShip;
@@ -53,6 +53,7 @@ public class GameScreen extends BaseScreen {
     private MainShip mainShip;
     private GameOver gameOver;
     private NewGame newGame;
+    private HeartHp heartHp;
 
     private BulletPool bulletPool;
     private EnemyPool enemyPool;
@@ -79,14 +80,14 @@ public class GameScreen extends BaseScreen {
         super.show();
         galaxy = new Texture("textures/galaxy.png");
         bg = new Texture("textures/bg.png");
-//        atlas = new TextureAtlas(Gdx.files.internal("textures/mainAtlas.tpack"));
-        Assets.getInstance().loadAssets(State.PLAYING);
+        atlas = new TextureAtlas(Gdx.files.internal("textures/mainAtlas.tpack"));
         laserSound = Gdx.audio.newSound(Gdx.files.internal("sounds/laser.wav"));
         bulletSound = Gdx.audio.newSound(Gdx.files.internal("sounds/bullet.wav"));
         explosion = Gdx.audio.newSound(Gdx.files.internal("sounds/explosion.wav"));
+        heartHp = new HeartHp(this);
         bulletPool = new BulletPool();
         explosionPool = new ExplosionPool(atlas, explosion);
-        particlePool = new ParticlePool();
+        particlePool = new ParticlePool(atlas);
         enemyPool = new EnemyPool(bulletPool, explosionPool, worldBounds, particlePool);
         enemyEmitter = new EnemyEmitter(atlas, enemyPool, worldBounds, bulletSound);
         font = new Font("font/font.fnt", "font/font.png");
@@ -142,7 +143,7 @@ public class GameScreen extends BaseScreen {
     public void dispose() {
         bg.dispose();
         galaxy.dispose();
-//        atlas.dispose();
+        atlas.dispose();
         bulletPool.dispose();
         enemyPool.dispose();
         music.dispose();
@@ -276,6 +277,7 @@ public class GameScreen extends BaseScreen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
         background.draw(batch);
+//        heartHp.draw(batch);
         backgroundGalaxy.draw(batch);
         for (Star star : stars) {
             star.draw(batch);
