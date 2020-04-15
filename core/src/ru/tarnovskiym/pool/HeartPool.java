@@ -48,7 +48,7 @@ public class HeartPool extends SpritesPool<Particle> {
     }
 
     public void setup(float x, float y, float vx, float vy, float timeMax, float size1, float size2, float r1, float g1, float b1, float a1, float r2, float g2, float b2, float a2) {
-        Particle item = obtain();
+        Particle item = getActiveElement();
         item.init(x, y, vx, vy, timeMax, size1, size2, r1, g1, b1, a1, r2, g2, b2, a2);
     }
 
@@ -57,6 +57,7 @@ public class HeartPool extends SpritesPool<Particle> {
             activeObjects.get(i).update(dt);
         }
         freeAllDestroyedActiveObjects();
+
     }
 
     public float lerp(float value1, float value2, float point) {

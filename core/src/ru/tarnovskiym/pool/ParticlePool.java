@@ -6,13 +6,10 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 
-import ru.tarnovskiym.base.ObjectPool;
-import ru.tarnovskiym.base.Sprite;
 import ru.tarnovskiym.base.SpritesPool;
-import ru.tarnovskiym.base.Assets;
 import ru.tarnovskiym.sprites.Particle;
 
-public class ParticlePool extends ObjectPool<Particle> {
+public class ParticlePool extends SpritesPool<Particle> {
 
     private TextureRegion oneParticle;
 
@@ -27,8 +24,8 @@ public class ParticlePool extends ObjectPool<Particle> {
 
     public void render(SpriteBatch batch) {
         batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-        for (int i = 0; i < activeList.size(); i++) {
-            Particle o = activeList.get(i);
+        for (int i = 0; i < activeObjects.size(); i++) {
+            Particle o = activeObjects.get(i);
             float t = o.getTime() / o.getTimeMax();
             float scale = lerp(o.getSize1(), o.getSize2(), t);
             batch.setColor(lerp(o.getR1(), o.getR2(), t), lerp(o.getG1(), o.getG2(), t), lerp(o.getB1(), o.getB2(), t), lerp(o.getA1(), o.getA2(), t));
@@ -36,8 +33,8 @@ public class ParticlePool extends ObjectPool<Particle> {
         }
         batch.setColor(1.0f, 1.0f, 1.0f, 1.0f);
         batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE);
-        for (int i = 0; i < activeList.size(); i++) {
-            Particle o = activeList.get(i);
+        for (int i = 0; i < activeObjects.size(); i++) {
+            Particle o = activeObjects.get(i);
             float t = o.getTime() / o.getTimeMax();
             float scale = lerp(o.getSize1(), o.getSize2(), t);
             if(MathUtils.random(0, 200) < 3) {
@@ -56,10 +53,10 @@ public class ParticlePool extends ObjectPool<Particle> {
     }
 
     public void update(float dt) {
-        for (int i = 0; i < activeList.size(); i++) {
-            activeList.get(i).update(dt);
+        for (int i = 0; i < activeObjects.size(); i++) {
+            activeObjects.get(i).update(dt);
         }
-        checkPool();
+        updateActiveSprites(dt);
     }
 
     public float lerp(float value1, float value2, float point) {

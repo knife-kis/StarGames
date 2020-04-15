@@ -279,6 +279,7 @@ public class GameScreen extends BaseScreen {
         bulletPool.freeAllDestroyedActiveObjects();
         enemyPool.freeAllDestroyedActiveObjects();
         explosionPool.freeAllDestroyedActiveObjects();
+        particlePool.freeAllDestroyedActiveObjects();
     }
 
     private void draw() {

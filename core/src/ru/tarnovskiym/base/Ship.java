@@ -90,13 +90,13 @@ public abstract class Ship extends Sprite {
     }
 
     private void shoot() {
-        Bullet bullet = bulletPool.obtain();
+        Bullet bullet = bulletPool.getActiveElement();
         bullet.set(this, bulletRegion, bulletPos, bulletV, bulletHeight, worldBounds, damage);
         shootSound.play();
     }
 
     private void boom() {
-        Explosion explosion = explosionPool.obtain();
+        Explosion explosion = explosionPool.getActiveElement();
         explosion.set(pos, getHeight());
     }
 

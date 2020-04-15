@@ -75,7 +75,7 @@ public class EnemyEmitter {
         generateTimer += delta;
         if (generateTimer >= generateInterval) {
             generateTimer = 0f;
-            Enemy enemy = enemyPool.obtain();
+            Enemy enemy = enemyPool.getActiveElement();
             float type = (float) Math.random();
             if (type < 0.5f) {
                 enemy.set(
