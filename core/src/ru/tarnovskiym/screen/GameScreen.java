@@ -44,6 +44,7 @@ public class GameScreen extends BaseScreen {
     private static final String FRAGS = "Frags: ";
     private static final String HP = "HP: ";
     private static final String LEVEL = "Level: ";
+    private static final int COUNT_LEVEL = 5;
 
     private Texture bg;
     private Texture galaxy;
@@ -259,19 +260,16 @@ public class GameScreen extends BaseScreen {
                 enemy.destroy();
                 mainShip.damage(enemy.getDamage());
             }
+
             for (Bullet bullet : bulletList) {
                 if (bullet.getOwner() != mainShip || bullet.isDestroyed()) {
                     continue;
                 }
-                if (enemy.isBulletCollision(bullet)) {
-                    enemy.damage(bullet.getDamage());
-                    bullet.destroy();
-                    if (enemy.isDestroyed()) {
-                        frags++;
-                        float velosityHeal = Rnd.nextFloat(-0.1f, -0.32f);
-                        healPool.setup(enemy.pos, enemy.getV().set(0, velosityHeal), 0.04f, worldBounds, 100);
-                    }
-                }
+                enemyByBulletColisions(enemy, bullet);
+
+            }
+            if (frags >= COUNT_LEVEL) {
+                enemyEmitter.setLevel((frags + COUNT_LEVEL) / COUNT_LEVEL);
             }
         }
         for (Bullet bullet : bulletList) {
@@ -292,6 +290,18 @@ public class GameScreen extends BaseScreen {
         }
         if (mainShip.isDestroyed()) {
             state = State.GAME_OVER;
+        }
+    }
+
+    private void enemyByBulletColisions(Enemy enemy, Bullet bullet) {
+        if (enemy.isBulletCollision(bullet)) {
+            enemy.damage(bullet.getDamage());
+            bullet.destroy();
+            if (enemy.isDestroyed()) {
+                frags++;
+                float velosityHeal = Rnd.nextFloat(-0.1f, -0.32f);
+                healPool.setup(enemy.pos, enemy.getV().set(0, velosityHeal), 0.04f, worldBounds, 15);
+            }
         }
     }
 

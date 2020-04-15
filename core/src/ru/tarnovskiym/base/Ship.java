@@ -99,7 +99,7 @@ public abstract class Ship extends Sprite {
     private void shoot() {
         Bullet bullet = bulletPool.getActiveElement();
         bullet.set(this, objectRegion, objectPos, objectV, objectHeight, worldBounds, damage);
-        shootSound.play();
+        shootSound.play(0.3f);
     }
 
     private void boom() {

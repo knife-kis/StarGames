@@ -5,37 +5,35 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
-import ru.tarnovskiym.base.Assets;
-import ru.tarnovskiym.exception.GameException;
 import ru.tarnovskiym.math.Rect;
 import ru.tarnovskiym.math.Rnd;
 import ru.tarnovskiym.pool.EnemyPool;
-import ru.tarnovskiym.pool.HealPool;
 import ru.tarnovskiym.sprites.Enemy;
 
 public class EnemyEmitter {
 
     private static final float ENEMY_SMALL_HEIGHT = 0.1f;
     private static final float ENEMY_SMALL_BULLET_HEIGHT = 0.01f;
-    private static final float ENEMY_SMALL_BULLET_VY = -2.5f;
+    private static final float ENEMY_SMALL_BULLET_VY = -20f;
     private static final int ENEMY_SMALL_DAMAGE = 1;
     private static final float ENEMY_SMALL_RELOAD_INTERVAL = 2f;
     private static final int ENEMY_SMALL_HP = 1;
 
     private static final float ENEMY_MEDIUM_HEIGHT = 0.15f;
     private static final float ENEMY_MEDIUM_BULLET_HEIGHT = 0.02f;
-    private static final float ENEMY_MEDIUM_BULLET_VY = -1.5f;
+    private static final float ENEMY_MEDIUM_BULLET_VY = -13.5f;
     private static final int ENEMY_MEDIUM_DAMAGE = 5;
     private static final float ENEMY_MEDIUM_RELOAD_INTERVAL = 2f;
     private static final int ENEMY_MEDIUM_HP = 5;
 
     private static final float ENEMY_BIG_HEIGHT = 0.2f;
     private static final float ENEMY_BIG_BULLET_HEIGHT = 0.04f;
-    private static final float ENEMY_BIG_BULLET_VY = -1f;
+    private static final float ENEMY_BIG_BULLET_VY = -8f;
     private static final int ENEMY_BIG_DAMAGE = 10;
     private static final float ENEMY_BIG_RELOAD_INTERVAL = 3f;
     private static final int ENEMY_BIG_HP = 10;
-    private static final float LEVEL_COEFICIENT = 0.2f;
+    private static final float LEVEL_COEFICIENT_V_ENEMY = 0.007f;
+    private static final float LEVEL_COEFICIENT_V_BULLET = 0.01f;
 
     private Rect worldBounds;
     private Sound shootSound;
@@ -54,7 +52,7 @@ public class EnemyEmitter {
 
     private final EnemyPool enemyPool;
 
-    private int level;
+    private int level = 1;
 
     public EnemyEmitter(TextureAtlas atlas, EnemyPool enemyPool, Rect worldBounds, Sound shootSound) {
         this.worldBounds = worldBounds;
@@ -67,10 +65,9 @@ public class EnemyEmitter {
         this.enemyMediumRegion = Regions.split(enemy1, 1, 2, 2);
         TextureRegion enemy2 = atlas.findRegion("enemy2");
         this.enemyBigRegion = Regions.split(enemy2, 1, 2, 2);
-        this.enemySmallV = new Vector2(0, -0.2f);
-        this.enemyMediumV = new Vector2(0, -0.03f);
-        this.enemyBigV = new Vector2(0, -0.005f);
-        this.level = 1;
+        this.enemySmallV = new Vector2(0, -0.08f);
+        this.enemyMediumV = new Vector2(0, -0.01f);
+        this.enemyBigV = new Vector2(0, -0.002f);
     }
 
     public void generate(float delta) {
@@ -83,10 +80,10 @@ public class EnemyEmitter {
             if (type < 0.5f) {
                 enemy.set(
                         enemySmallRegion,
-                        enemySmallV,
+                        enemySmallV.add(0f, (float) - level * LEVEL_COEFICIENT_V_ENEMY),
                         bulletRegion,
                         ENEMY_SMALL_BULLET_HEIGHT,
-                        ENEMY_SMALL_BULLET_VY * level * LEVEL_COEFICIENT,
+                        ENEMY_SMALL_BULLET_VY * level * LEVEL_COEFICIENT_V_BULLET,
                         ENEMY_SMALL_DAMAGE,
                         ENEMY_SMALL_RELOAD_INTERVAL,
                         shootSound,
@@ -96,10 +93,10 @@ public class EnemyEmitter {
             } else if (type < 0.8f) {
                 enemy.set(
                         enemyMediumRegion,
-                        enemyMediumV,
+                        enemyMediumV.add(0f, (float) - level * LEVEL_COEFICIENT_V_ENEMY),
                         bulletRegion,
                         ENEMY_MEDIUM_BULLET_HEIGHT,
-                        ENEMY_MEDIUM_BULLET_VY * level * LEVEL_COEFICIENT,
+                        ENEMY_MEDIUM_BULLET_VY * level * LEVEL_COEFICIENT_V_BULLET,
                         ENEMY_MEDIUM_DAMAGE,
                         ENEMY_MEDIUM_RELOAD_INTERVAL,
                         shootSound,
@@ -109,10 +106,10 @@ public class EnemyEmitter {
             } else {
                 enemy.set(
                         enemyBigRegion,
-                        enemyBigV,
+                        enemyBigV.add(0f, (float) - level * LEVEL_COEFICIENT_V_ENEMY),
                         bulletRegion,
                         ENEMY_BIG_BULLET_HEIGHT,
-                        ENEMY_BIG_BULLET_VY * level * LEVEL_COEFICIENT,
+                        ENEMY_BIG_BULLET_VY * level * LEVEL_COEFICIENT_V_BULLET,
                         ENEMY_BIG_DAMAGE,
                         ENEMY_BIG_RELOAD_INTERVAL,
                         shootSound,
@@ -127,5 +124,9 @@ public class EnemyEmitter {
 
     public int getLevel() {
         return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
     }
 }
