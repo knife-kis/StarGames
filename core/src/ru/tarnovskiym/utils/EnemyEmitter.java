@@ -17,24 +17,25 @@ public class EnemyEmitter {
 
     private static final float ENEMY_SMALL_HEIGHT = 0.1f;
     private static final float ENEMY_SMALL_BULLET_HEIGHT = 0.01f;
-    private static final float ENEMY_SMALL_BULLET_VY = -0.5f;
+    private static final float ENEMY_SMALL_BULLET_VY = -2.5f;
     private static final int ENEMY_SMALL_DAMAGE = 1;
     private static final float ENEMY_SMALL_RELOAD_INTERVAL = 2f;
     private static final int ENEMY_SMALL_HP = 1;
 
     private static final float ENEMY_MEDIUM_HEIGHT = 0.15f;
     private static final float ENEMY_MEDIUM_BULLET_HEIGHT = 0.02f;
-    private static final float ENEMY_MEDIUM_BULLET_VY = -0.3f;
+    private static final float ENEMY_MEDIUM_BULLET_VY = -1.5f;
     private static final int ENEMY_MEDIUM_DAMAGE = 5;
     private static final float ENEMY_MEDIUM_RELOAD_INTERVAL = 2f;
     private static final int ENEMY_MEDIUM_HP = 5;
 
     private static final float ENEMY_BIG_HEIGHT = 0.2f;
     private static final float ENEMY_BIG_BULLET_HEIGHT = 0.04f;
-    private static final float ENEMY_BIG_BULLET_VY = -0.2f;
+    private static final float ENEMY_BIG_BULLET_VY = -1f;
     private static final int ENEMY_BIG_DAMAGE = 10;
     private static final float ENEMY_BIG_RELOAD_INTERVAL = 3f;
     private static final int ENEMY_BIG_HP = 10;
+    private static final float LEVEL_COEFICIENT = 0.2f;
 
     private Rect worldBounds;
     private Sound shootSound;
@@ -85,8 +86,8 @@ public class EnemyEmitter {
                         enemySmallV,
                         bulletRegion,
                         ENEMY_SMALL_BULLET_HEIGHT,
-                        ENEMY_SMALL_BULLET_VY,
-                        ENEMY_SMALL_DAMAGE * level,
+                        ENEMY_SMALL_BULLET_VY * level * LEVEL_COEFICIENT,
+                        ENEMY_SMALL_DAMAGE,
                         ENEMY_SMALL_RELOAD_INTERVAL,
                         shootSound,
                         ENEMY_SMALL_HP,
@@ -98,8 +99,8 @@ public class EnemyEmitter {
                         enemyMediumV,
                         bulletRegion,
                         ENEMY_MEDIUM_BULLET_HEIGHT,
-                        ENEMY_MEDIUM_BULLET_VY,
-                        ENEMY_MEDIUM_DAMAGE * level,
+                        ENEMY_MEDIUM_BULLET_VY * level * LEVEL_COEFICIENT,
+                        ENEMY_MEDIUM_DAMAGE,
                         ENEMY_MEDIUM_RELOAD_INTERVAL,
                         shootSound,
                         ENEMY_MEDIUM_HP,
@@ -111,8 +112,8 @@ public class EnemyEmitter {
                         enemyBigV,
                         bulletRegion,
                         ENEMY_BIG_BULLET_HEIGHT,
-                        ENEMY_BIG_BULLET_VY,
-                        ENEMY_BIG_DAMAGE * level,
+                        ENEMY_BIG_BULLET_VY * level * LEVEL_COEFICIENT,
+                        ENEMY_BIG_DAMAGE,
                         ENEMY_BIG_RELOAD_INTERVAL,
                         shootSound,
                         ENEMY_BIG_HP,

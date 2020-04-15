@@ -72,6 +72,7 @@ public class GameScreen extends BaseScreen {
     private Sound laserSound;
     private Sound bulletSound;
     private Sound explosion;
+    private Sound apteka;
     private State state;
     private State prevState;
 
@@ -92,6 +93,7 @@ public class GameScreen extends BaseScreen {
         laserSound = Gdx.audio.newSound(Gdx.files.internal("sounds/laser.wav"));
         bulletSound = Gdx.audio.newSound(Gdx.files.internal("sounds/bullet.wav"));
         explosion = Gdx.audio.newSound(Gdx.files.internal("sounds/explosion.wav"));
+        apteka = Gdx.audio.newSound(Gdx.files.internal("sounds/apteka.wav"));
         healPool = new HealPool(atlas2);
         bulletPool = new BulletPool();
         explosionPool = new ExplosionPool(atlas, explosion);
@@ -163,6 +165,7 @@ public class GameScreen extends BaseScreen {
         laserSound.dispose();
         bulletSound.dispose();
         explosion.dispose();
+        apteka.dispose();
         super.dispose();
     }
 
@@ -266,7 +269,7 @@ public class GameScreen extends BaseScreen {
                     if (enemy.isDestroyed()) {
                         frags++;
                         float velosityHeal = Rnd.nextFloat(-0.1f, -0.32f);
-                        healPool.setup(enemy.pos, enemy.getV().set(0, velosityHeal), 0.04f, worldBounds, 100 );
+                        healPool.setup(enemy.pos, enemy.getV().set(0, velosityHeal), 0.04f, worldBounds, 100);
                     }
                 }
             }
@@ -283,6 +286,7 @@ public class GameScreen extends BaseScreen {
         for (PowerUp powerUp : powerUpsList) {
             if(!powerUp.isOutside(mainShip)){
                 mainShip.heal(powerUp.getHeal());
+                apteka.play();
                 powerUp.destroy();
             }
         }
