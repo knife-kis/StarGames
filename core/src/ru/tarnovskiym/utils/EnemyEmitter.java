@@ -10,6 +10,7 @@ import ru.tarnovskiym.exception.GameException;
 import ru.tarnovskiym.math.Rect;
 import ru.tarnovskiym.math.Rnd;
 import ru.tarnovskiym.pool.EnemyPool;
+import ru.tarnovskiym.pool.HealPool;
 import ru.tarnovskiym.sprites.Enemy;
 
 public class EnemyEmitter {
@@ -72,6 +73,7 @@ public class EnemyEmitter {
     }
 
     public void generate(float delta) {
+
         generateTimer += delta;
         if (generateTimer >= generateInterval) {
             generateTimer = 0f;

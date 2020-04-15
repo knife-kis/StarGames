@@ -29,14 +29,14 @@ public class MainShip extends Ship {
         this.bulletPool = bulletPool;
         this.explosionPool = explosionPool;
         this.shootSound = shootSound;
-        bulletRegion = atlas.findRegion("bulletMainShip");
-        bulletV = new Vector2(0, 0.5f);
-        bulletPos = new Vector2();
+        objectRegion = atlas.findRegion("bulletMainShip");
+        objectV = new Vector2(0, 0.5f);
+        objectPos = new Vector2();
         v0 = new Vector2(0.5f, 0);
         v = new Vector2();
         reloadInterval = 0.2f;
         reloadTimer = reloadInterval;
-        bulletHeight = 0.01f;
+        objectHeight = 0.01f;
         damage = 1;
         hp = HP_MAX;
     }
@@ -51,6 +51,15 @@ public class MainShip extends Ship {
         stop();
         pos.x = worldBounds.pos.x;
     }
+    public void heal(float heal){
+        damageAnimateTimer = 0f;
+        frame = 1;
+        hp += heal;{
+            if(hp > HP_MAX){
+                hp = HP_MAX;
+            }
+        }
+    }
 
     @Override
     public void resize(Rect worldBounds) {
@@ -62,7 +71,7 @@ public class MainShip extends Ship {
     @Override
     public void update(float delta) {
         super.update(delta);
-        bulletPos.set(pos.x, pos.y + getHalfHeight());
+        objectPos.set(pos.x, pos.y + getHalfHeight());
         autoShoot(delta);
         if (getLeft() < worldBounds.getLeft()) {
             setLeft(worldBounds.getLeft());

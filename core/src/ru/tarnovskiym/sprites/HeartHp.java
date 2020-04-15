@@ -1,9 +1,7 @@
 package ru.tarnovskiym.sprites;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.sun.org.apache.xpath.internal.objects.XNull;
 
 import ru.tarnovskiym.base.Sprite;
 import ru.tarnovskiym.exception.GameException;

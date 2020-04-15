@@ -20,10 +20,10 @@ public abstract class Ship extends Sprite {
     protected Rect worldBounds;
     protected BulletPool bulletPool;
     protected ExplosionPool explosionPool;
-    protected TextureRegion bulletRegion;
-    protected Vector2 bulletV;
-    protected Vector2 bulletPos;
-    protected float bulletHeight;
+    protected TextureRegion objectRegion;
+    protected Vector2 objectV;
+    protected Vector2 objectPos;
+    protected float objectHeight;
     protected int damage;
     protected Sound shootSound;
     protected float hp;
@@ -40,6 +40,10 @@ public abstract class Ship extends Sprite {
 
     public Ship(TextureRegion region, int rows, int cols, int frames) throws GameException {
         super(region, rows, cols, frames);
+    }
+
+    public Vector2 getV() {
+        return v;
     }
 
     @Override
@@ -63,9 +67,12 @@ public abstract class Ship extends Sprite {
         frame = 0;
         boom();
     }
+
     public float getHp() {
         return hp;
     }
+
+
 
     public void damage(int damage) {
         damageAnimateTimer = 0f;
@@ -91,7 +98,7 @@ public abstract class Ship extends Sprite {
 
     private void shoot() {
         Bullet bullet = bulletPool.getActiveElement();
-        bullet.set(this, bulletRegion, bulletPos, bulletV, bulletHeight, worldBounds, damage);
+        bullet.set(this, objectRegion, objectPos, objectV, objectHeight, worldBounds, damage);
         shootSound.play();
     }
 
@@ -99,5 +106,7 @@ public abstract class Ship extends Sprite {
         Explosion explosion = explosionPool.getActiveElement();
         explosion.set(pos, getHeight());
     }
+
+
 
 }
