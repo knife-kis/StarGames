@@ -6,10 +6,10 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 
-import ru.tarnovskiym.base.ObjectPool;
+import ru.tarnovskiym.base.SpritesPool;
 import ru.tarnovskiym.sprites.Particle;
 
-public class HeartPool extends ObjectPool<Particle> {
+public class HeartPool extends SpritesPool<Particle> {
 
     private TextureRegion oneParticle;
 
@@ -24,8 +24,8 @@ public class HeartPool extends ObjectPool<Particle> {
 
     public void render(SpriteBatch batch) {
         batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-        for (int i = 0; i < activeList.size(); i++) {
-            Particle o = activeList.get(i);
+        for (int i = 0; i < activeObjects.size(); i++) {
+            Particle o = activeObjects.get(i);
             float t = o.getTime() / o.getTimeMax();
             float scale = lerp(o.getSize1(), o.getSize2(), t);
             batch.setColor(lerp(o.getR1(), o.getR2(), t), lerp(o.getG1(), o.getG2(), t), lerp(o.getB1(), o.getB2(), t), lerp(o.getA1(), o.getA2(), t));
@@ -33,8 +33,8 @@ public class HeartPool extends ObjectPool<Particle> {
         }
         batch.setColor(1.0f, 1.0f, 1.0f, 1.0f);
         batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE);
-        for (int i = 0; i < activeList.size(); i++) {
-            Particle o = activeList.get(i);
+        for (int i = 0; i < activeObjects.size(); i++) {
+            Particle o = activeObjects.get(i);
             float t = o.getTime() / o.getTimeMax();
             float scale = lerp(o.getSize1(), o.getSize2(), t);
             if(MathUtils.random(0, 200) < 3) {
@@ -48,15 +48,15 @@ public class HeartPool extends ObjectPool<Particle> {
     }
 
     public void setup(float x, float y, float vx, float vy, float timeMax, float size1, float size2, float r1, float g1, float b1, float a1, float r2, float g2, float b2, float a2) {
-        Particle item = getActiveElement();
+        Particle item = obtain();
         item.init(x, y, vx, vy, timeMax, size1, size2, r1, g1, b1, a1, r2, g2, b2, a2);
     }
 
     public void update(float dt) {
-        for (int i = 0; i < activeList.size(); i++) {
-            activeList.get(i).update(dt);
+        for (int i = 0; i < activeObjects.size(); i++) {
+            activeObjects.get(i).update(dt);
         }
-        checkPool();
+        freeAllDestroyedActiveObjects();
     }
 
     public float lerp(float value1, float value2, float point) {

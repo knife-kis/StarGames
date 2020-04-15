@@ -17,7 +17,6 @@ public class Enemy extends Ship {
 
     ParticlePool particlePool;
 
-
     private final Vector2 descentV;
 
     public Enemy(BulletPool bulletPool, ExplosionPool explosionPool, Rect worldBounds, ParticlePool particlePool) {
