@@ -9,12 +9,12 @@ import com.badlogic.gdx.math.MathUtils;
 import ru.tarnovskiym.base.SpritesPool;
 import ru.tarnovskiym.sprites.Particle;
 
-public class ParticlePool extends SpritesPool<Particle> {
+public class HeartPool extends SpritesPool<Particle> {
 
     private TextureRegion oneParticle;
 
-    public ParticlePool(TextureAtlas atlas) {
-        this.oneParticle = atlas.findRegion("star");
+    public HeartPool(TextureAtlas atlas) {
+        this.oneParticle = atlas.findRegion("1heart");
     }
 
     @Override
@@ -56,7 +56,8 @@ public class ParticlePool extends SpritesPool<Particle> {
         for (int i = 0; i < activeObjects.size(); i++) {
             activeObjects.get(i).update(dt);
         }
-        updateActiveSprites(dt);
+        freeAllDestroyedActiveObjects();
+
     }
 
     public float lerp(float value1, float value2, float point) {

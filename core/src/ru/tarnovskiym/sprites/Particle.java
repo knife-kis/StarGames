@@ -1,10 +1,10 @@
 package ru.tarnovskiym.sprites;
 
 import com.badlogic.gdx.math.Vector2;
-import ru.tarnovskiym.base.Poolable;
+
 import ru.tarnovskiym.base.Sprite;
 
-public class Particle extends Sprite implements Poolable{
+public class Particle extends Sprite {
     private Vector2 position;
     private Vector2 velocity;
     private float r1, g1, b1, a1;
@@ -66,10 +66,6 @@ public class Particle extends Sprite implements Poolable{
     public float getSize1() {
         return size1;
     }
-    @Override
-    public boolean isActive() {
-        return active;
-    }
 
     public float getSize2() {
         return size2;
@@ -102,15 +98,11 @@ public class Particle extends Sprite implements Poolable{
         this.active = true;
     }
 
-    public void deactivate() {
-        active = false;
-    }
-
     public void update(float dt) {
         time += dt;
         position.mulAdd(velocity, dt);
         if (time > timeMax) {
-            deactivate();
+            destroy();
         }
     }
 }

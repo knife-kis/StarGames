@@ -12,7 +12,7 @@ public abstract class SpritesPool<T extends Sprite> {
 
     protected abstract T newObject();
 
-    public T obtain() {
+    public T getActiveElement() {
         T object;
         if (freeObjects.isEmpty()) {
             object = newObject();

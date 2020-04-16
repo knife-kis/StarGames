@@ -13,7 +13,7 @@ import ru.tarnovskiym.pool.ExplosionPool;
 
 public class MainShip extends Ship {
 
-    private static final int HP = 100;
+    protected static final int HP_MAX = 100;
     private static final float SHIP_HEIGHT = 0.15f;
     private static final float BOTTOM_MARGIN = 0.05f;
     private static final int INVALID_POINTER = -1;
@@ -29,27 +29,36 @@ public class MainShip extends Ship {
         this.bulletPool = bulletPool;
         this.explosionPool = explosionPool;
         this.shootSound = shootSound;
-        bulletRegion = atlas.findRegion("bulletMainShip");
-        bulletV = new Vector2(0, 0.5f);
-        bulletPos = new Vector2();
+        objectRegion = atlas.findRegion("bulletMainShip");
+        objectV = new Vector2(0, 0.5f);
+        objectPos = new Vector2();
         v0 = new Vector2(0.5f, 0);
         v = new Vector2();
         reloadInterval = 0.2f;
         reloadTimer = reloadInterval;
-        bulletHeight = 0.01f;
+        objectHeight = 0.01f;
         damage = 1;
-        hp = HP;
+        hp = HP_MAX;
     }
 
     public void startNewGame(Rect worldBounds) {
         flushDestroy();
-        hp = HP;
+        hp = HP_MAX;
         pressedLeft = false;
         pressedRight = false;
         leftPointer = INVALID_POINTER;
         rightPointer = INVALID_POINTER;
         stop();
         pos.x = worldBounds.pos.x;
+    }
+    public void heal(float heal){
+        damageAnimateTimer = 0f;
+        frame = 1;
+        hp += heal;{
+            if(hp > HP_MAX){
+                hp = HP_MAX;
+            }
+        }
     }
 
     @Override
@@ -62,7 +71,7 @@ public class MainShip extends Ship {
     @Override
     public void update(float delta) {
         super.update(delta);
-        bulletPos.set(pos.x, pos.y + getHalfHeight());
+        objectPos.set(pos.x, pos.y + getHalfHeight());
         autoShoot(delta);
         if (getLeft() < worldBounds.getLeft()) {
             setLeft(worldBounds.getLeft());

@@ -1,0 +1,26 @@
+
+pack1.png
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+14heart
+  rotate: false
+  xy: 2, 2
+  size: 1040, 1036
+  orig: 1040, 1036
+  offset: 0, 0
+  index: -1
+heal
+  rotate: false
+  xy: 1044, 2
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+1heart
+  rotate: false
+  xy: 1546, 2
+  size: 60, 60
+  orig: 60, 60
+  offset: 0, 0
+  index: -1

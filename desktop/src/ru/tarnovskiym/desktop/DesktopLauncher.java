@@ -10,6 +10,7 @@ public class DesktopLauncher {
 		config.width = 400;
 		config.height = 600;
 		config.resizable = false;
+		config.vSyncEnabled = true;
 		new LwjglApplication(new StarGame(), config);
 	}
 }

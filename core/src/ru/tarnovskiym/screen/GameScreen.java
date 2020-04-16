@@ -15,14 +15,18 @@ import ru.tarnovskiym.base.BaseScreen;
 import ru.tarnovskiym.base.Font;
 import ru.tarnovskiym.exception.GameException;
 import ru.tarnovskiym.math.Rect;
+import ru.tarnovskiym.math.Rnd;
 import ru.tarnovskiym.pool.BulletPool;
 import ru.tarnovskiym.pool.EnemyPool;
 import ru.tarnovskiym.pool.ExplosionPool;
+import ru.tarnovskiym.pool.HealPool;
+import ru.tarnovskiym.pool.HeartPool;
 import ru.tarnovskiym.pool.ParticlePool;
 import ru.tarnovskiym.sprites.Background;
 import ru.tarnovskiym.sprites.Bullet;
 import ru.tarnovskiym.sprites.Enemy;
 import ru.tarnovskiym.sprites.Galaxy;
+import ru.tarnovskiym.sprites.PowerUp;
 import ru.tarnovskiym.sprites.HeartHp;
 import ru.tarnovskiym.sprites.botton.NewGame;
 import ru.tarnovskiym.sprites.text.GameOver;
@@ -40,6 +44,7 @@ public class GameScreen extends BaseScreen {
     private static final String FRAGS = "Frags: ";
     private static final String HP = "HP: ";
     private static final String LEVEL = "Level: ";
+    private static final int COUNT_LEVEL = 5;
 
     private Texture bg;
     private Texture galaxy;
@@ -48,6 +53,7 @@ public class GameScreen extends BaseScreen {
     private Galaxy backgroundGalaxy;
 
     private TextureAtlas atlas;
+    private TextureAtlas atlas2;
 
     private Star[] stars;
     private MainShip mainShip;
@@ -58,13 +64,16 @@ public class GameScreen extends BaseScreen {
     private BulletPool bulletPool;
     private EnemyPool enemyPool;
     private ParticlePool particlePool;
+    private HeartPool heartPool;
     private ExplosionPool explosionPool;
     private EnemyEmitter enemyEmitter;
+    private HealPool healPool;
 
     private Music music;
     private Sound laserSound;
     private Sound bulletSound;
     private Sound explosion;
+    private Sound apteka;
     private State state;
     private State prevState;
 
@@ -81,14 +90,17 @@ public class GameScreen extends BaseScreen {
         galaxy = new Texture("textures/galaxy.png");
         bg = new Texture("textures/bg.png");
         atlas = new TextureAtlas(Gdx.files.internal("textures/mainAtlas.tpack"));
+        atlas2 = new TextureAtlas(Gdx.files.internal("textures/Hp/games.pack"));
         laserSound = Gdx.audio.newSound(Gdx.files.internal("sounds/laser.wav"));
         bulletSound = Gdx.audio.newSound(Gdx.files.internal("sounds/bullet.wav"));
         explosion = Gdx.audio.newSound(Gdx.files.internal("sounds/explosion.wav"));
-        heartHp = new HeartHp(this);
+        apteka = Gdx.audio.newSound(Gdx.files.internal("sounds/apteka.wav"));
+        healPool = new HealPool(atlas2);
         bulletPool = new BulletPool();
         explosionPool = new ExplosionPool(atlas, explosion);
         particlePool = new ParticlePool(atlas);
-        enemyPool = new EnemyPool(bulletPool, explosionPool, worldBounds, particlePool);
+        heartPool = new HeartPool(atlas2);
+        enemyPool = new EnemyPool(bulletPool, explosionPool, worldBounds, particlePool, healPool);
         enemyEmitter = new EnemyEmitter(atlas, enemyPool, worldBounds, bulletSound);
         font = new Font("font/font.fnt", "font/font.png");
         font.setSize(FONT_SIZE);
@@ -105,6 +117,15 @@ public class GameScreen extends BaseScreen {
     }
 
     @Override
+    public void render(float delta) {
+        super.render(delta);
+        update(delta);
+        checkCollisions();
+        freeAllDestroyed();
+        draw();
+    }
+
+    @Override
     public void pause() {
         prevState = state;
         state = State.PAUSE;
@@ -118,15 +139,6 @@ public class GameScreen extends BaseScreen {
     }
 
     @Override
-    public void render(float delta) {
-        super.render(delta);
-        update(delta);
-        checkCollisions();
-        freeAllDestroyed();
-        draw();
-    }
-
-    @Override
     public void resize(Rect worldBounds) {
         super.resize(worldBounds);
         background.resize(worldBounds);
@@ -135,6 +147,7 @@ public class GameScreen extends BaseScreen {
             star.resize(worldBounds);
         }
         mainShip.resize(worldBounds);
+        heartHp.resize(worldBounds);
         gameOver.resize(worldBounds);
         newGame.resize(worldBounds);
     }
@@ -144,12 +157,16 @@ public class GameScreen extends BaseScreen {
         bg.dispose();
         galaxy.dispose();
         atlas.dispose();
+        atlas2.dispose();
         bulletPool.dispose();
         enemyPool.dispose();
+        healPool.dispose();
+        heartPool.dispose();
         music.dispose();
         laserSound.dispose();
         bulletSound.dispose();
         explosion.dispose();
+        apteka.dispose();
         super.dispose();
     }
 
@@ -200,6 +217,7 @@ public class GameScreen extends BaseScreen {
                 stars[i] =  new Star(atlas);
             }
             mainShip = new MainShip(atlas, bulletPool, explosionPool, laserSound);
+            heartHp = new HeartHp(atlas2, mainShip, heartPool);
             gameOver = new GameOver(atlas);
             newGame = new NewGame(atlas, this);
         } catch (GameException e) {
@@ -215,10 +233,13 @@ public class GameScreen extends BaseScreen {
         explosionPool.updateActiveSprites(delta);
         if (state == State.PLAYING) {
             mainShip.update(delta);
+            heartHp.update(delta);
             bulletPool.updateActiveSprites(delta);
             enemyPool.updateActiveSprites(delta);
+            healPool.updateActiveSprites(delta);
             enemyEmitter.generate(delta);
             particlePool.update(delta);
+            heartPool.update(delta);
         }
 
     }
@@ -229,6 +250,7 @@ public class GameScreen extends BaseScreen {
         }
         List<Enemy> enemyList = enemyPool.getActiveObjects();
         List<Bullet> bulletList = bulletPool.getActiveObjects();
+        List<PowerUp> powerUpsList = healPool.getActiveObjects();
         for (Enemy enemy : enemyList) {
             if (enemy.isDestroyed()) {
                 continue;
@@ -236,20 +258,18 @@ public class GameScreen extends BaseScreen {
             float minDist = enemy.getHalfWidth() + mainShip.getHalfWidth();
             if (mainShip.pos.dst(enemy.pos) < minDist) {
                 enemy.destroy();
-                frags++;
                 mainShip.damage(enemy.getDamage());
             }
+
             for (Bullet bullet : bulletList) {
                 if (bullet.getOwner() != mainShip || bullet.isDestroyed()) {
                     continue;
                 }
-                if (enemy.isBulletCollision(bullet)) {
-                    enemy.damage(bullet.getDamage());
-                    bullet.destroy();
-                    if (enemy.isDestroyed()) {
-                        frags++;
-                    }
-                }
+                enemyByBulletColisions(enemy, bullet);
+
+            }
+            if (frags >= COUNT_LEVEL) {
+                enemyEmitter.setLevel((frags + COUNT_LEVEL) / COUNT_LEVEL);
             }
         }
         for (Bullet bullet : bulletList) {
@@ -261,8 +281,27 @@ public class GameScreen extends BaseScreen {
                 bullet.destroy();
             }
         }
+        for (PowerUp powerUp : powerUpsList) {
+            if(!powerUp.isOutside(mainShip)){
+                mainShip.heal(powerUp.getHeal());
+                apteka.play();
+                powerUp.destroy();
+            }
+        }
         if (mainShip.isDestroyed()) {
             state = State.GAME_OVER;
+        }
+    }
+
+    private void enemyByBulletColisions(Enemy enemy, Bullet bullet) {
+        if (enemy.isBulletCollision(bullet)) {
+            enemy.damage(bullet.getDamage());
+            bullet.destroy();
+            if (enemy.isDestroyed()) {
+                frags++;
+                float velosityHeal = Rnd.nextFloat(-0.1f, -0.32f);
+                healPool.setup(enemy.pos, enemy.getV().set(0, velosityHeal), 0.04f, worldBounds, 15);
+            }
         }
     }
 
@@ -270,6 +309,8 @@ public class GameScreen extends BaseScreen {
         bulletPool.freeAllDestroyedActiveObjects();
         enemyPool.freeAllDestroyedActiveObjects();
         explosionPool.freeAllDestroyedActiveObjects();
+        particlePool.freeAllDestroyedActiveObjects();
+        healPool.freeAllDestroyedActiveObjects();
     }
 
     private void draw() {
@@ -277,7 +318,7 @@ public class GameScreen extends BaseScreen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
         background.draw(batch);
-//        heartHp.draw(batch);
+        heartHp.draw(batch);
         backgroundGalaxy.draw(batch);
         for (Star star : stars) {
             star.draw(batch);
@@ -288,6 +329,8 @@ public class GameScreen extends BaseScreen {
                 enemyPool.drawActiveSprites(batch);
                 bulletPool.drawActiveSprites(batch);
                 particlePool.render(batch);
+                heartPool.render(batch);
+                healPool.drawActiveSprites(batch);
                 break;
             case GAME_OVER:
                 gameOver.draw(batch);
@@ -304,6 +347,7 @@ public class GameScreen extends BaseScreen {
         mainShip.startNewGame(worldBounds);
         frags = 0;
         bulletPool.freeAllActiveObjects();
+        healPool.freeAllActiveObjects();
         enemyPool.freeAllActiveObjects();
         explosionPool.freeAllActiveObjects();
     }
